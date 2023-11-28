@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>cache</PackageTags>
+    <PackageTags>Cache</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
