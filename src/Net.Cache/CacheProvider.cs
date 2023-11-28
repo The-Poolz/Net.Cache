@@ -4,14 +4,16 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
 {
     protected readonly IStorageProvider<TKey, TValue> storageProvider;
     protected readonly Dictionary<TKey, TValue> cache;
+    protected readonly Func<TKey, TValue> valueFactory;
 
-    public CacheProvider(IStorageProvider<TKey, TValue> storageProvider)
+    public CacheProvider(IStorageProvider<TKey, TValue> storageProvider, Func<TKey, TValue> valueFactory)
     {
         this.storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
+        this.valueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
         cache = new Dictionary<TKey, TValue>();
     }
 
-    public virtual TValue GetOrCache(TKey key, Func<TKey, TValue> valueFactory)
+    public virtual TValue GetOrAdd(TKey key)
     {
         if (!cache.TryGetValue(key, out var value))
         {
@@ -23,7 +25,7 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
         return value;
     }
 
-    public virtual void Cache(TKey key, TValue value)
+    public virtual void TryAdd(TKey key, TValue value)
     {
         if (!cache.TryAdd(key, value))
         {
