@@ -25,11 +25,5 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
         return value;
     }
 
-    public virtual void TryAdd(TKey key, TValue value)
-    {
-        if (!cache.TryAdd(key, value))
-        {
-            throw new ArgumentException($"An item with the same key has already been added. Key: {key}");
-        }
-    }
+    public virtual bool TryAdd(TKey key, TValue value) => cache.TryAdd(key, value);
 }
