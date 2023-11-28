@@ -1,10 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>Net.Cache.DynamoDb</PackageId>
+    <Title>Net.Cache.DynamoDb is a specialized extension of the Net.Cache library, providing an abstract base class for DynamoDB storage providers.</Title>
+    <Description>Net.Cache.DynamoDb is a specialized extension of the Net.Cache library, providing an abstract base class for DynamoDB storage providers.</Description>
+    <Version>1.0.0</Version>
+    <Authors>ArdenHide, Lomet</Authors>
+    <Company>The-Poolz</Company>
+    <Product>Net.Cache.DynamoDb</Product>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Cache DynamoDb</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.300.10" />
@@ -12,6 +31,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Net.Cache\Net.Cache.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
