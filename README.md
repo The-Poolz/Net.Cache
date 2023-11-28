@@ -13,11 +13,11 @@ Welcome to the Net.Cache repository! This repository hosts two related .NET libr
 - **Description**: A generic caching library for .NET applications.
 - **Key Features**: Provides a generic interface for storage providers and a concrete cache provider implementation.
 - **Usage**: Ideal for applications requiring efficient data retrieval and caching mechanisms.
-- **[Read More](./Net.Cache/README.md)**
+- **[Read More](https://github.com/The-Poolz/Net.Cache/tree/master/src/Net.Cache/README.md)**
 
 ### Net.Cache.DynamoDb
 
 - **Description**: An extension of Net.Cache for integrating with Amazon DynamoDB.
 - **Key Features**: Offers an abstract base class for creating DynamoDB storage providers.
 - **Usage**: Best suited for applications using Amazon DynamoDB for key-value storage.
-- **[Read More](./Net.Cache.DynamoDb/README.md)**
+- **[Read More](https://github.com/The-Poolz/Net.Cache/tree/master/src/Net.Cache.DynamoDb/README.md)**
