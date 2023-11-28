@@ -16,10 +16,10 @@ public class CacheProviderTests
     public void GetOrCache_ShouldReturnCachedValue_IfKeyExistsInCache()
     {
         var storageProvider = new DynamoDbStorageProvider();
-        var cacheProvider = new CacheProvider<string, string>(storageProvider);
-        cacheProvider.Cache(name, description);
+        var cacheProvider = new CacheProvider<string, string>(storageProvider, _ => "New Description");
+        cacheProvider.TryAdd(name, description);
 
-        var result = cacheProvider.GetOrCache(name, _ => "New Description");
+        var result = cacheProvider.GetOrAdd(name);
 
         result.Should().Be(description);
     }
@@ -32,10 +32,10 @@ public class CacheProviderTests
             .Setup(x => x.GetItemAsync(It.IsAny<GetItemRequest>(), default))
             .ReturnsAsync(new GetItemResponse());
         var storageProvider = new DynamoDbStorageProvider(clientMock);
-        var cacheProvider = new CacheProvider<string, string>(storageProvider);
         const string newDescription = "New Description";
+        var cacheProvider = new CacheProvider<string, string>(storageProvider, _ => newDescription);
 
-        var result = cacheProvider.GetOrCache(name, _ => newDescription);
+        var result = cacheProvider.GetOrAdd(name);
 
         result.Should().Be(newDescription);
         clientMock.Verify(x => x.PutItemAsync(It.IsAny<PutItemRequest>(), default), Times.Once);
@@ -56,9 +56,9 @@ public class CacheProviderTests
                 }
             });
         var storageProvider = new DynamoDbStorageProvider(clientMock);
-        var cacheProvider = new CacheProvider<string, string>(storageProvider);
+        var cacheProvider = new CacheProvider<string, string>(storageProvider, _ => "New Description");
 
-        var result = cacheProvider.GetOrCache(name, _ => "New Description");
+        var result = cacheProvider.GetOrAdd(name);
 
         result.Should().Be(description);
     }
