@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{41B3D0C4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Cache.Tests", "tests\Net.Cache.Tests\Net.Cache.Tests.csproj", "{66CB4C95-0BC8-46E4-B379-2500F756CC72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Cache.DynamoDb", "src\Net.Cache.DynamoDb\Net.Cache.DynamoDb.csproj", "{8696C816-355D-427A-9141-B213B7BC8492}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{66CB4C95-0BC8-46E4-B379-2500F756CC72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66CB4C95-0BC8-46E4-B379-2500F756CC72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66CB4C95-0BC8-46E4-B379-2500F756CC72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8696C816-355D-427A-9141-B213B7BC8492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8696C816-355D-427A-9141-B213B7BC8492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8696C816-355D-427A-9141-B213B7BC8492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8696C816-355D-427A-9141-B213B7BC8492}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{49DE83A0-6BBC-495B-8AC2-902176B429EC} = {465E443D-C1F0-44C1-AFEE-27346549062C}
 		{66CB4C95-0BC8-46E4-B379-2500F756CC72} = {41B3D0C4-EDCF-42B5-9805-BA67A2557819}
+		{8696C816-355D-427A-9141-B213B7BC8492} = {465E443D-C1F0-44C1-AFEE-27346549062C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AC133F3C-6217-4480-BE85-5FC5A69C31AA}
