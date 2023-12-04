@@ -1,5 +1,10 @@
 # Net.Cache Repository
 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=The-Poolz_Net.Cache)
+
+[![CodeFactor](https://www.codefactor.io/repository/github/the-poolz/net.cache/badge)](https://www.codefactor.io/repository/github/the-poolz/net.cache)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=The-Poolz_Net.Cache&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=The-Poolz_Net.Cache)
+
 ## Overview
 
 Welcome to the Net.Cache repository! This repository hosts two related .NET libraries, `Net.Cache` and `Net.Cache.DynamoDb`, which are designed to provide flexible and efficient caching solutions for .NET applications. 
