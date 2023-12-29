@@ -22,16 +22,23 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
     }
 
     /// <summary>
-    /// Gets a value from the cache by key. If the value is not present in the cache, it is created using the factory function and stored in the cache and storage.
+    /// Gets a value from the cache by key. If the value is not present in the cache, it is created using the parameter less factory function and stored in the cache and storage.
     /// </summary>
     /// <param name="key">The key to look up the value.</param>
-    /// <param name="valueFactory">The function that creates new values for caching.</param>
+    /// <param name="valueFactory">A parameter less function that creates new values for caching.</param>
     /// <returns>The value associated with the key.</returns>
     public virtual TValue GetOrAdd(TKey key, Func<TValue> valueFactory)
     {
         return GetOrAddInternal(key, _ => valueFactory());
     }
 
+    /// <summary>
+    /// Gets a value from the cache by key. If the value is not present in the cache, it is created using the factory function with parameters and stored in the cache and storage.
+    /// </summary>
+    /// <param name="key">The key to look up the value.</param>
+    /// <param name="valueFactory">The function that creates new values for caching. This function can take any number of parameters.</param>
+    /// <param name="args">The arguments to pass to the <paramref name="valueFactory"/> function.</param>
+    /// <returns>The value associated with the key.</returns>
     public virtual TValue GetOrAdd(TKey key, Func<object[], TValue> valueFactory, params object[] args)
     {
         return GetOrAddInternal(key, valueFactory, args);
