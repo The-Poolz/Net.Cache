@@ -58,7 +58,7 @@ public class CacheProviderTests
         var storageProvider = new DynamoDbStorageProvider(clientMock);
         var cacheProvider = new CacheProvider<string, string>(storageProvider);
 
-        var result = cacheProvider.GetOrAdd(name, () => "New Description");
+        var result = cacheProvider.GetOrAdd(name, _ => "New Description");
 
         result.Should().Be(description);
     }
