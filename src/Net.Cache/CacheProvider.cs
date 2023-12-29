@@ -9,18 +9,15 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
 {
     protected readonly IStorageProvider<TKey, TValue> storageProvider;
     protected readonly Dictionary<TKey, TValue> cache;
-    protected readonly Func<TKey, TValue> valueFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CacheProvider{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="storageProvider">The storage provider used for retrieving and storing values.</param>
-    /// <param name="valueFactory">The function that creates new values for caching.</param>
-    /// <exception cref="ArgumentNullException">Thrown if the <paramref name="storageProvider"/> or <paramref name="valueFactory"/> parameters are null.</exception>
-    public CacheProvider(IStorageProvider<TKey, TValue> storageProvider, Func<TKey, TValue> valueFactory)
+    /// <exception cref="ArgumentNullException">Thrown if the <paramref name="storageProvider"/> parameter is null.</exception>
+    public CacheProvider(IStorageProvider<TKey, TValue> storageProvider)
     {
         this.storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
-        this.valueFactory = valueFactory ?? throw new ArgumentNullException(nameof(valueFactory));
         cache = new Dictionary<TKey, TValue>();
     }
 
@@ -28,12 +25,23 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
     /// Gets a value from the cache by key. If the value is not present in the cache, it is created using the factory function and stored in the cache and storage.
     /// </summary>
     /// <param name="key">The key to look up the value.</param>
+    /// <param name="valueFactory">The function that creates new values for caching.</param>
     /// <returns>The value associated with the key.</returns>
-    public virtual TValue GetOrAdd(TKey key)
+    public virtual TValue GetOrAdd(TKey key, Func<TValue> valueFactory)
+    {
+        return GetOrAddInternal(key, _ => valueFactory());
+    }
+
+    public virtual TValue GetOrAdd(TKey key, Func<object[], TValue> valueFactory, params object[] args)
+    {
+        return GetOrAddInternal(key, valueFactory, args);
+    }
+
+    private TValue GetOrAddInternal(TKey key, Func<object[], TValue> valueFactory, params object[] args)
     {
         if (!cache.TryGetValue(key, out var value))
         {
-            value = storageProvider.TryGetValue(key, out var storedValue) ? storedValue : valueFactory(key);
+            value = storageProvider.TryGetValue(key, out var storedValue) ? storedValue : valueFactory(args);
             cache[key] = value;
             storageProvider.Store(key, value);
         }
