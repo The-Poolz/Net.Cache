@@ -16,7 +16,7 @@ public class CacheProviderTests
     public void GetOrCache_ShouldReturnCachedValue_IfKeyExistsInCache()
     {
         var storageProvider = new DynamoDbStorageProvider();
-        var cacheProvider = new CacheProvider<string, string>(storageProvider);
+        var cacheProvider = new WithInternalCacheProvider<string, string>(storageProvider);
         cacheProvider.TryAdd(name, description);
 
         var result = cacheProvider.GetOrAdd(name, () => "New Description");
@@ -33,7 +33,7 @@ public class CacheProviderTests
             .ReturnsAsync(new GetItemResponse());
         var storageProvider = new DynamoDbStorageProvider(clientMock);
         const string newDescription = "New Description";
-        var cacheProvider = new CacheProvider<string, string>(storageProvider);
+        var cacheProvider = new WithInternalCacheProvider<string, string>(storageProvider);
 
         var result = cacheProvider.GetOrAdd(name, () => newDescription);
 
@@ -56,7 +56,7 @@ public class CacheProviderTests
                 }
             });
         var storageProvider = new DynamoDbStorageProvider(clientMock);
-        var cacheProvider = new CacheProvider<string, string>(storageProvider);
+        var cacheProvider = new WithInternalCacheProvider<string, string>(storageProvider);
 
         var result = cacheProvider.GetOrAdd(name, _ => "New Description");
 

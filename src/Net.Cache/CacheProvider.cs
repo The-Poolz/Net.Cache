@@ -8,7 +8,6 @@
 public class CacheProvider<TKey, TValue> where TKey : notnull
 {
     protected readonly IStorageProvider<TKey, TValue> storageProvider;
-    protected readonly Dictionary<TKey, TValue> cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CacheProvider{TKey, TValue}"/> class.
@@ -18,7 +17,6 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
     public CacheProvider(IStorageProvider<TKey, TValue> storageProvider)
     {
         this.storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
-        cache = new Dictionary<TKey, TValue>();
     }
 
     /// <summary>
@@ -44,23 +42,10 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
         return GetOrAddInternal(key, valueFactory, args);
     }
 
-    private TValue GetOrAddInternal(TKey key, Func<object[], TValue> valueFactory, params object[] args)
+    protected virtual TValue GetOrAddInternal(TKey key, Func<object[], TValue> valueFactory, params object[] args)
     {
-        if (!cache.TryGetValue(key, out var value))
-        {
-            value = storageProvider.TryGetValue(key, out var storedValue) ? storedValue : valueFactory(args);
-            cache[key] = value;
-            storageProvider.Store(key, value);
-        }
-
+        var value = storageProvider.TryGetValue(key, out var storedValue) ? storedValue : valueFactory(args);
+        storageProvider.Store(key, value);
         return value;
     }
-
-    /// <summary>
-    /// Attempts to add a value to the cache with the specified key.
-    /// </summary>
-    /// <param name="key">The key under which to add the value.</param>
-    /// <param name="value">The value to add.</param>
-    /// <returns><see langword="true"/> if the value was successfully added to the cache; otherwise, <see langword="false"/>.</returns>
-    public virtual bool TryAdd(TKey key, TValue value) => cache.TryAdd(key, value);
 }
