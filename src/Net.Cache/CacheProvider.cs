@@ -5,7 +5,9 @@
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TValue">The type of the value.</typeparam>
-public class CacheProvider<TKey, TValue> where TKey : notnull
+public class CacheProvider<TKey, TValue>
+    where TKey : notnull
+    where TValue : notnull
 {
     protected readonly IStorageProvider<TKey, TValue> storageProvider;
 
@@ -44,7 +46,11 @@ public class CacheProvider<TKey, TValue> where TKey : notnull
 
     protected virtual TValue GetOrAddInternal(TKey key, Func<object[], TValue> valueFactory, params object[] args)
     {
-        var value = storageProvider.TryGetValue(key, out var storedValue) ? storedValue : valueFactory(args);
+        if (storageProvider.TryGetValue(key, out var storedValue))
+        {
+            return storedValue;
+        }
+        var value = valueFactory(args);
         storageProvider.Store(key, value);
         return value;
     }

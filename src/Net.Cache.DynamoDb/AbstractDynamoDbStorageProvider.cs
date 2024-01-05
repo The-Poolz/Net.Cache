@@ -9,6 +9,8 @@ namespace Net.Cache.DynamoDb;
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TValue">The type of the value.</typeparam>
 public abstract class AbstractDynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TValue>
+    where TKey : notnull
+    where TValue : notnull
 {
     private readonly string tableName;
     protected readonly IAmazonDynamoDB client;
@@ -32,20 +34,8 @@ public abstract class AbstractDynamoDbStorageProvider<TKey, TValue> : IStoragePr
         this.client = client;
     }
 
-    /// <summary>
-    /// Stores the specified key-value pair in DynamoDB.
-    /// </summary>
-    /// <param name="key">The key to store.</param>
-    /// <param name="value">The value to store.</param>
     public abstract void Store(TKey key, TValue value);
 
-    /// <summary>
-    /// Tries to get the value associated with the specified key from DynamoDB.
-    /// </summary>
-    /// <param name="key">The key to look up.</param>
-    /// <param name="value">When this method returns, contains the <paramref name="value"/> associated with the specified <paramref name="key"/>, if the <paramref name="key"/> is found;
-    /// otherwise, the <see langword="default"/> value for the type of the <paramref name="value"/> parameter.</param>
-    /// <returns><see langword="true"/> if the key was found in DynamoDB; otherwise, <see langword="false"/>.</returns>
     public abstract bool TryGetValue(TKey key, out TValue value);
 
     /// <summary>
