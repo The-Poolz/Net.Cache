@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Net.Cache.DynamoDb.Models;
 
 namespace Net.Cache.DynamoDb;
 
@@ -9,8 +10,8 @@ namespace Net.Cache.DynamoDb;
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TValue">The type of the value.</typeparam>
 public abstract class AbstractDynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TValue>
-    where TKey : notnull
-    where TValue : notnull
+    where TKey : IEquatable<TKey>
+    where TValue : DynamoDbTable<TKey>
 {
     private readonly string tableName;
     protected readonly IAmazonDynamoDB client;
@@ -34,7 +35,53 @@ public abstract class AbstractDynamoDbStorageProvider<TKey, TValue> : IStoragePr
         this.client = client;
     }
 
-    public abstract void Store(TKey key, TValue value);
+    public virtual void Store(TKey key, TValue value)
+    {
+        var item = new Dictionary<string, AttributeValue>();
+
+        // TODO: Need to use custom attributes 
+        //var typeHandlers = new Dictionary<Type, Func<object, AttributeValue>>
+        //{
+        //    { typeof(string), x => new AttributeValue { S = x.ToString() } },
+        //    { typeof(bool), x => new AttributeValue { BOOL = (bool)x } },
+        //    { typeof(sbyte), x => new AttributeValue { N = x.ToString() } },
+        //    { typeof(byte), x => new AttributeValue { N = x.ToString() } },
+        //    { typeof(short), x => new AttributeValue { N = x.ToString() } },
+        //    { typeof(ushort), x => new AttributeValue { N = x.ToString() } },
+        //    { typeof(int), x => new AttributeValue { N = x.ToString() } },
+        //    { typeof(uint), x => new AttributeValue { N = x.ToString() } },
+        //    { typeof(long), x => new AttributeValue { N = x.ToString() } },
+        //    { typeof(ulong), x => new AttributeValue { N = x.ToString() } },
+        //    { typeof(IEnumerable<string>), x => new AttributeValue { SS = (List<string>)x } },
+        //    { typeof(string[]), x => new AttributeValue { SS = (List<string>)x } },
+        //    { typeof(List<string>), x => new AttributeValue { SS = (List<string>)x } },
+        //    { typeof(List<sbyte>), x => new AttributeValue { NS = (List<string>)x } },
+        //    { typeof(List<byte>), x => new AttributeValue { NS = (List<string>)x } },
+        //    { typeof(List<short>), x => new AttributeValue { NS = (List<string>)x } },
+        //    { typeof(List<ushort>), x => new AttributeValue { NS = (List<string>)x } },
+        //    { typeof(List<int>), x => new AttributeValue { NS = (List<string>)x } },
+        //    { typeof(List<uint>), x => new AttributeValue { NS = (List<string>)x } },
+        //    { typeof(List<long>), x => new AttributeValue { NS = (List<string>)x } },
+        //    { typeof(List<ulong>), x => new AttributeValue { NS = (List<string>)x } },
+        //};
+
+        foreach (var prop in typeof(TValue).GetProperties())
+        {
+            var propValue = prop.GetValue(value);
+            if (propValue == null) continue;
+
+            if (typeHandlers.TryGetValue(prop.PropertyType, out var handler))
+            {
+                item[prop.Name] = handler(propValue);
+            }
+            else
+            {
+                throw new NotSupportedException($"'{prop.PropertyType}' type is not supported.");
+            }
+        }
+
+        PutItem(item);
+    }
 
     public abstract bool TryGetValue(TKey key, out TValue value);
 

@@ -9,16 +9,25 @@ public class CacheProvider<TKey, TValue>
     where TKey : notnull
     where TValue : notnull
 {
-    protected readonly IStorageProvider<TKey, TValue> storageProvider;
+    protected readonly IStorageProvider<TKey, TValue>[] storageProviders;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CacheProvider{TKey, TValue}"/> class.
     /// </summary>
-    /// <param name="storageProvider">The storage provider used for retrieving and storing values.</param>
-    /// <exception cref="ArgumentNullException">Thrown if the <paramref name="storageProvider"/> parameter is null.</exception>
-    public CacheProvider(IStorageProvider<TKey, TValue> storageProvider)
+    /// <param name="storageProviders">The storage providers used for retrieving and storing values.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the <paramref name="storageProviders"/> parameter is null.</exception>
+    public CacheProvider(IEnumerable<IStorageProvider<TKey, TValue>> storageProviders)
+        : this(storageProviders.ToArray())
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CacheProvider{TKey, TValue}"/> class.
+    /// </summary>
+    /// <param name="storageProviders">The storage providers used for retrieving and storing values.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the <paramref name="storageProviders"/> parameter is null.</exception>
+    public CacheProvider(params IStorageProvider<TKey, TValue>[] storageProviders)
     {
-        this.storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
+        this.storageProviders = storageProviders ?? throw new ArgumentNullException(nameof(storageProviders));
     }
 
     /// <summary>
@@ -46,12 +55,21 @@ public class CacheProvider<TKey, TValue>
 
     protected virtual TValue GetOrAddInternal(TKey key, Func<object[], TValue> valueFactory, params object[] args)
     {
-        if (storageProvider.TryGetValue(key, out var storedValue))
+        for (var i = 0; i < storageProviders.Length; i++)
         {
+            if (!storageProviders[i].TryGetValue(key, out var storedValue))
+            {
+                continue;
+            }
+            if (i != 0)
+            {
+                storageProviders[0].Store(key, storedValue);
+            }
             return storedValue;
         }
+
         var value = valueFactory(args);
-        storageProvider.Store(key, value);
+        storageProviders[0].Store(key, value);
         return value;
     }
 }
