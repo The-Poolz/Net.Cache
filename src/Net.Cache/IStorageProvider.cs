@@ -6,6 +6,8 @@
 /// <typeparam name="TKey">The type of keys in the storage.</typeparam>
 /// <typeparam name="TValue">The type of values in the storage.</typeparam>
 public interface IStorageProvider<in TKey, TValue>
+    where TKey : notnull
+    where TValue : notnull
 {
     /// <summary>
     /// Stores the specified value with the associated key.
