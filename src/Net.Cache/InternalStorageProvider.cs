@@ -6,7 +6,7 @@
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TValue">The type of the value.</typeparam>
 public class InternalStorageProvider<TKey, TValue> : IStorageProvider<TKey, TValue>
-    where TKey : notnull
+    where TKey : IEquatable<TKey>
     where TValue : notnull
 {
     protected readonly Lazy<Dictionary<TKey, TValue>> lazyCache;
