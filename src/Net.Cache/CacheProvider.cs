@@ -55,13 +55,13 @@ public class CacheProvider<TKey, TValue>
 
     protected virtual TValue GetOrAddInternal(TKey key, Func<object[], TValue> valueFactory, params object[] args)
     {
-        for (var i = 0; i < storageProviders.Length; i++)
+        foreach (var provider in storageProviders)
         {
-            if (!storageProviders[i].TryGetValue(key, out var storedValue))
+            if (!provider.TryGetValue(key, out var storedValue))
             {
                 continue;
             }
-            if (i != 0)
+            if (provider != storageProviders[0])
             {
                 storageProviders[0].Store(key, storedValue);
             }
