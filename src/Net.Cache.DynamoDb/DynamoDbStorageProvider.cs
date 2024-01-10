@@ -12,7 +12,8 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     where TKey : IEquatable<TKey>
     where TValue : class
 {
-    protected readonly IDynamoDBContext context;
+    protected readonly Lazy<IDynamoDBContext> lazyContext;
+    protected IDynamoDBContext Context => lazyContext.Value;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DynamoDbStorageProvider{TKey,TValue}"/> class with the specified table name.
@@ -27,7 +28,7 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// <param name="client">The DynamoDB client to use for database operations.</param>
     public DynamoDbStorageProvider(IAmazonDynamoDB client)
     {
-        context = new DynamoDBContext(client);
+        lazyContext = new Lazy<IDynamoDBContext>(new DynamoDBContext(client));
     }
 
     /// <summary>
@@ -36,12 +37,12 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// <param name="context">The DynamoDB context to use for database operations.</param>
     public DynamoDbStorageProvider(IDynamoDBContext context)
     {
-        this.context = context;
+        lazyContext = new Lazy<IDynamoDBContext>(context);
     }
 
     public void Store(TKey key, TValue value)
     {
-        context.SaveAsync(value);
+        Context.SaveAsync(value);
     }
 
     public bool TryGetValue(TKey key, out TValue value)
@@ -49,7 +50,7 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
         value = default;
         try
         {
-            value = context.LoadAsync<TValue>(key)
+            value = Context.LoadAsync<TValue>(key)
                 .GetAwaiter()
                 .GetResult();
             return value != null;
