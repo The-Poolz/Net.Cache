@@ -6,7 +6,7 @@
 /// </summary>
 /// <typeparam name="TKey">The type of keys used in the storage, ensuring unique identification of values.</typeparam>
 /// <typeparam name="TValue">The type of values to be stored, required to be non-nullable.</typeparam>
-public class InternalStorageProvider<TKey, TValue> : IStorageProvider<TKey, TValue>
+public class InMemoryStorageProvider<TKey, TValue> : IStorageProvider<TKey, TValue>
     where TKey : IEquatable<TKey>
     where TValue : notnull
 {
@@ -14,10 +14,10 @@ public class InternalStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     protected Dictionary<TKey, TValue> Cache => lazyCache.Value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InternalStorageProvider{TKey, TValue}"/> class.
+    /// Initializes a new instance of the <see cref="InMemoryStorageProvider{TKey, TValue}"/> class.
     /// Sets up lazy initialization for the internal dictionary that stores the key-value pairs.
     /// </summary>
-    public InternalStorageProvider()
+    public InMemoryStorageProvider()
     {
         lazyCache = new Lazy<Dictionary<TKey, TValue>>();
     }

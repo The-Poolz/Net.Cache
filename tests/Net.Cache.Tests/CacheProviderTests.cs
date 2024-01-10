@@ -8,7 +8,7 @@ public class CacheProviderTests
     [Fact]
     public void GetOrCache_ShouldAddValueToCache_IfKeyNotExists()
     {
-        var storageProvider = new InternalStorageProvider<string, string>();
+        var storageProvider = new InMemoryStorageProvider<string, string>();
         var cacheProvider = new CacheProvider<string, string>(storageProvider);
 
         var cat = cacheProvider.GetOrAdd("cat", () => "Meow");
