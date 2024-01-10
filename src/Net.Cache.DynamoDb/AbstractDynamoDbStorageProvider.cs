@@ -11,7 +11,7 @@ namespace Net.Cache.DynamoDb;
 /// <typeparam name="TValue">The type of the value.</typeparam>
 public abstract class AbstractDynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TValue>
     where TKey : IEquatable<TKey>
-    where TValue : DynamoDbTable<TKey>
+    where TValue : notnull, DynamoDbTable<TKey>
 {
     private readonly string tableName;
     protected readonly IAmazonDynamoDB client;
@@ -39,31 +39,22 @@ public abstract class AbstractDynamoDbStorageProvider<TKey, TValue> : IStoragePr
     {
         var item = new Dictionary<string, AttributeValue>();
 
-        // TODO: Need to use custom attributes 
-        //var typeHandlers = new Dictionary<Type, Func<object, AttributeValue>>
-        //{
-        //    { typeof(string), x => new AttributeValue { S = x.ToString() } },
-        //    { typeof(bool), x => new AttributeValue { BOOL = (bool)x } },
-        //    { typeof(sbyte), x => new AttributeValue { N = x.ToString() } },
-        //    { typeof(byte), x => new AttributeValue { N = x.ToString() } },
-        //    { typeof(short), x => new AttributeValue { N = x.ToString() } },
-        //    { typeof(ushort), x => new AttributeValue { N = x.ToString() } },
-        //    { typeof(int), x => new AttributeValue { N = x.ToString() } },
-        //    { typeof(uint), x => new AttributeValue { N = x.ToString() } },
-        //    { typeof(long), x => new AttributeValue { N = x.ToString() } },
-        //    { typeof(ulong), x => new AttributeValue { N = x.ToString() } },
-        //    { typeof(IEnumerable<string>), x => new AttributeValue { SS = (List<string>)x } },
-        //    { typeof(string[]), x => new AttributeValue { SS = (List<string>)x } },
-        //    { typeof(List<string>), x => new AttributeValue { SS = (List<string>)x } },
-        //    { typeof(List<sbyte>), x => new AttributeValue { NS = (List<string>)x } },
-        //    { typeof(List<byte>), x => new AttributeValue { NS = (List<string>)x } },
-        //    { typeof(List<short>), x => new AttributeValue { NS = (List<string>)x } },
-        //    { typeof(List<ushort>), x => new AttributeValue { NS = (List<string>)x } },
-        //    { typeof(List<int>), x => new AttributeValue { NS = (List<string>)x } },
-        //    { typeof(List<uint>), x => new AttributeValue { NS = (List<string>)x } },
-        //    { typeof(List<long>), x => new AttributeValue { NS = (List<string>)x } },
-        //    { typeof(List<ulong>), x => new AttributeValue { NS = (List<string>)x } },
-        //};
+        var typeHandlers = new Dictionary<Type, Func<object, AttributeValue>>
+        {
+            { typeof(string), x => new AttributeValue { S = x.ToString() } },
+            { typeof(bool), x => new AttributeValue { BOOL = (bool)x } },
+            { typeof(decimal), x => new AttributeValue { N = x.ToString() } },
+            { typeof(float), x => new AttributeValue { N = x.ToString() } },
+            { typeof(double), x => new AttributeValue { N = x.ToString() } },
+            { typeof(int), x => new AttributeValue { N = x.ToString() } },
+            { typeof(long), x => new AttributeValue { N = x.ToString() } },
+            { typeof(string[]), x => new AttributeValue { SS = (List<string>)x } },
+            { typeof(int[]), x => new AttributeValue { NS = (List<string>)x } },
+            { typeof(long[]), x => new AttributeValue { NS = (List<string>)x } },
+            { typeof(decimal[]), x => new AttributeValue { NS = (List<string>)x } },
+            { typeof(float[]), x => new AttributeValue { NS = (List<string>)x } },
+            { typeof(double[]), x => new AttributeValue { NS = (List<string>)x } },
+        };
 
         foreach (var prop in typeof(TValue).GetProperties())
         {
