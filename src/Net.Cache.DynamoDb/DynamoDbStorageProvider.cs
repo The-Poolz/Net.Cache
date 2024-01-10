@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Net.Cache.DynamoDb;
 
@@ -51,7 +52,7 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     }
 
     /// <inheritdoc cref="IStorageProvider{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
-    public bool TryGetValue(TKey key, out TValue value)
+    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
         value = default;
         try

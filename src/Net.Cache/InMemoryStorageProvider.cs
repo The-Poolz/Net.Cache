@@ -1,4 +1,6 @@
-﻿namespace Net.Cache;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Net.Cache;
 
 /// <summary>
 /// Implements the <see cref="IStorageProvider{TKey, TValue}"/> interface using an internal dictionary. 
@@ -26,5 +28,5 @@ public class InMemoryStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     public void Store(TKey key, TValue value) => Cache.Add(key, value);
 
     /// <inheritdoc cref="IStorageProvider{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
-    public bool TryGetValue(TKey key, out TValue value) => Cache.TryGetValue(key, out value!);
+    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) => Cache.TryGetValue(key, out value);
 }

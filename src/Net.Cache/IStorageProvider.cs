@@ -1,4 +1,6 @@
-﻿namespace Net.Cache;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Net.Cache;
 
 /// <summary>
 /// Defines an interface for managing key-value based storage operations. It abstracts the underlying storage mechanism,
@@ -26,5 +28,5 @@ public interface IStorageProvider<in TKey, TValue>
     /// <param name="value">When this method returns, contains the value associated with the specified key, if the key is found;
     /// otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param>
     /// <returns><see langword="true"/> if the value was found; otherwise, <see langword="false"/>.</returns>
-    bool TryGetValue(TKey key, out TValue value);
+    bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value);
 }
