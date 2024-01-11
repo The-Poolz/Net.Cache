@@ -10,7 +10,7 @@ public class CacheProvider<TKey, TValue>
     where TKey : IEquatable<TKey>
     where TValue : notnull
 {
-    protected readonly IStorageProvider<TKey, TValue>[] storageProviders;
+    protected readonly List<IStorageProvider<TKey, TValue>> storageProviders;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CacheProvider{TKey, TValue}"/> class using a collection of storage providers.
@@ -30,7 +30,7 @@ public class CacheProvider<TKey, TValue>
     /// <exception cref="ArgumentNullException">Thrown when the <paramref name="storageProviders"/> argument is <see langword="null"/>.</exception>
     public CacheProvider(params IStorageProvider<TKey, TValue>[] storageProviders)
     {
-        this.storageProviders = storageProviders ?? throw new ArgumentNullException(nameof(storageProviders));
+        this.storageProviders = storageProviders.ToList() ?? throw new ArgumentNullException(nameof(storageProviders));
     }
 
     /// <summary>
