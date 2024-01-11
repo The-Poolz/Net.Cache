@@ -27,10 +27,9 @@ public class CacheProvider<TKey, TValue>
     /// This constructor is typically used when you have a fixed number of storage providers.
     /// </summary>
     /// <param name="storageProviders">An array of storage providers used for value storage and retrieval.</param>
-    /// <exception cref="ArgumentNullException">Thrown when the <paramref name="storageProviders"/> argument is <see langword="null"/>.</exception>
     public CacheProvider(params IStorageProvider<TKey, TValue>[] storageProviders)
     {
-        this.storageProviders = storageProviders.ToList() ?? throw new ArgumentNullException(nameof(storageProviders));
+        this.storageProviders = storageProviders.ToList();
     }
 
     /// <summary>
