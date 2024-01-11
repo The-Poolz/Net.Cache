@@ -2,34 +2,60 @@
 
 ## Overview
 
-Net.Cache is a C# library designed to provide efficient and easy-to-use caching solutions for .NET applications. It offers a generic interface and a concrete implementation for caching values by key, ensuring quick data retrieval and improved performance.
+Net.Cache is a comprehensive caching library for .NET, designed to offer versatile tools for cache management.
+The library focuses on facilitating key-value based caching operations and provides a default implementation with `InMemoryStorageProvider`.
+It allows for easy integration and extension, enabling developers to use different caching strategies while maintaining a consistent interface.
 
 ## Features
 
-- **Generic Interface**: `IStorageProvider<TKey, TValue>` allows for a flexible storage mechanism that can be adapted to various storage systems.
-- **Cache Provider**: `CacheProvider<TKey, TValue>` handles the caching logic, including storage and retrieval of values.
-- **Extensibility**: Easily extendable with custom storage providers.
+- `Generic Caching Mechanism`: Supports any data type for keys and values, requiring keys to be equatable and non-nullable.
+- `Default In-Memory Caching`: Includes `InMemoryStorageProvider` for out-of-the-box in-memory caching.
+- `Customizable Storage Providers`: Easily extend or implement custom storage providers to suit various caching needs.
+- `Safe Value Retrieval`: Utilize `TryGetValue` for safe retrieval, reducing the risk of exceptions with missing keys.
+- `Dynamic Cache Management`: Efficiently handle caching with the ability to dynamically add values when not present.
 
 ## Getting Started
 
-To use Net.Cache in your project, follow these steps:
+### Installation
 
-1. Install the package via NuGet.
-2. Create an instance of `CacheProvider`, passing your storage provider and value factory function.
-3. Use the `GetOrAdd` and `TryAdd` methods to interact with the cache.
+Install `Net.Cache` via the NuGet package manager or clone the repository into your project.
 
-## Example Usage
+### Usage
+
+#### Implementing Custom Storage Providers
+
+Create custom storage providers by implementing the `IStorageProvider<TKey, TValue>` interface.
+Alternatively, use the provided `InMemoryStorageProvider<TKey, TValue>`.
 
 ```csharp
-// Define your storage provider
-IStorageProvider<string, int> storageProvider = new YourStorageProvider();
+var inMemoryStorage = new InMemoryStorageProvider<int, string>();
+```
 
-// Create a CacheProvider instance
-var cache = new CacheProvider<string, int>(storageProvider, key => ComputeValue(key));
+#### Using CacheProvider
 
-// Retrieve or add value to cache
-int value = cache.GetOrAdd("myKey");
+Manage your caching logic with `CacheProvider<TKey, TValue>`, which can handle multiple storage providers including custom ones.
 
-// Add value to cache
-bool added = cache.TryAdd("newKey", 42);
+```csharp
+var cache = new CacheProvider<int, string>(inMemoryStorage);
+```
+
+#### Storing and Retrieving Values
+Easily store and retrieve values using keys.
+
+```csharp
+// Storing a value
+cache.Store(1, "Hello World");
+
+// Retrieving a value
+if (cache.TryGetValue(1, out var value)) {
+    Console.WriteLine(value); // Outputs: Hello World
+}
+```
+
+#### Adding Values Dynamically
+
+Leverage the GetOrAdd method to add values to the cache dynamically if they don't already exist.
+
+```csharp
+string value = cache.GetOrAdd(2, () => "New Value");
 ```
