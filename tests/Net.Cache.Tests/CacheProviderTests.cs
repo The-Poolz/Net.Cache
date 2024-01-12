@@ -6,6 +6,9 @@ namespace Net.Cache.Tests;
 
 public class CacheProviderTests
 {
+    private const string key = "testKey";
+    private readonly Mock<IStorageProvider<string, string>> storageMock = new();
+
     [Fact]
     public void GetOrCache_UsingInMemoryStorageProvider()
     {
@@ -26,9 +29,7 @@ public class CacheProviderTests
     [Fact]
     public void GetOrAdd_WithParameterlessFactory_CachesValue()
     {
-        var key = "testKey";
         var expectedValue = "testValue";
-        var storageMock = new Mock<IStorageProvider<string, string>>();
         storageMock.Setup(s => s.TryGetValue(key, out expectedValue)).Returns(true);
 
         var cacheProvider = new CacheProvider<string, string>(storageMock.Object);
@@ -41,9 +42,7 @@ public class CacheProviderTests
     [Fact]
     public void GetOrAdd_WithFactoryAndParameters_CachesValue()
     {
-        var key = "testKey";
         var expectedValue = "testValue";
-        var storageMock = new Mock<IStorageProvider<string, string>>();
         storageMock.Setup(s => s.TryGetValue(key, out expectedValue)).Returns(false);
 
         var cacheProvider = new CacheProvider<string, string>(storageMock.Object);
@@ -56,9 +55,7 @@ public class CacheProviderTests
     [Fact]
     public void GetOrAdd_StoresValueInPrimaryStorage()
     {
-        var key = "testKey";
         var value = "testValue";
-        var storageMock = new Mock<IStorageProvider<string, string>>();
         storageMock.Setup(s => s.TryGetValue(key, out value)).Returns(false);
 
         var cacheProvider = new CacheProvider<string, string>(storageMock.Object);
@@ -70,7 +67,6 @@ public class CacheProviderTests
     [Fact]
     public void GetOrAdd_RetrievesValueFromSecondaryStorage()
     {
-        var key = "testKey";
         var value = "testValue";
         var primaryStorageMock = new Mock<IStorageProvider<string, string>>();
         var secondaryStorageMock = new Mock<IStorageProvider<string, string>>();
