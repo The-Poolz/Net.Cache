@@ -7,7 +7,7 @@
     <PackageId>Net.Cache</PackageId>
     <Title>Net.Cache is a C# library designed to provide efficient and easy-to-use caching solutions for .NET applications.</Title>
     <Description>Net.Cache is a C# library designed to provide efficient and easy-to-use caching solutions for .NET applications.</Description>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>ArdenHide, Lomet</Authors>
     <Company>The-Poolz</Company>
     <Product>Net.Cache</Product>
@@ -16,6 +16,11 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>Cache</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReleaseNotes>- CacheProvider working with collection of StorageProviders
+- CacheProvider receive valueFactory function as method parameter
+- Created InMemoryStorageProvider
+
+Full changes can found here: https://github.com/The-Poolz/Net.Cache/releases/tag/v1.1.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
