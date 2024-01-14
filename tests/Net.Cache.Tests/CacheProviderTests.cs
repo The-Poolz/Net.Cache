@@ -58,8 +58,7 @@ public class CacheProviderTests
             _ => throw new InvalidOperationException("Invalid factory delegate type.")
         };
 
-        storageMock.Verify(result);
-        storageMock.Verify(timesExpectedStoreCalled);
+        storageMock.Verify(result, timesExpectedStoreCalled);
     }
 
     [Fact]
@@ -70,8 +69,7 @@ public class CacheProviderTests
         var cacheProvider = new CacheProvider<string, string>(primaryStorageMock.GetMockCache(key, false), storageMock.GetMockCache(key, true));
         var result = cacheProvider.GetOrAdd(key, () => "newValue");
 
-        storageMock.Verify(result);
-        storageMock.Verify(Times.Never());
+        storageMock.Verify(result, Times.Never());
         primaryStorageMock.Verify(Times.Once());
     }
 }

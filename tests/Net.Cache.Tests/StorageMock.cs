@@ -17,6 +17,11 @@ public class StorageMock
         storageMock.Setup(s => s.TryGetValue(key, out value!)).Returns(returns);
         return storageMock.Object;
     }
+    public void Verify(string result, Times times)
+    {
+        Verify(times);
+        Verify(result);
+    }
     public void Verify(Times times) => storageMock.Verify(s => s.Store(It.IsAny<string>(), It.IsAny<string>()), times);
     public void Verify(string result) => result.Should().Be(value);
 }
