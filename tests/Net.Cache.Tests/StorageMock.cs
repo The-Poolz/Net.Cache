@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 
 namespace Net.Cache.Tests;
 
@@ -19,5 +20,9 @@ public class StorageMock
     public void Verify(Times times)
     {
         storageMock.Verify(s => s.Store(It.IsAny<string>(), It.IsAny<string>()), times);
+    }
+    public void Verify(string result)
+    {
+        result.Should().Be(value);
     }
 }

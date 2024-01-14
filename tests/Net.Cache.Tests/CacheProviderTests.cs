@@ -8,7 +8,6 @@ public class CacheProviderTests
 {
     private const string key = "testKey";
     private readonly StorageMock storageMock = new();
-    private string Value => storageMock.value;
     public static IEnumerable<object[]> AnimalSoundsTestData()
     {
         yield return new object[] { "cat", "Meow" };
@@ -59,21 +58,20 @@ public class CacheProviderTests
             _ => throw new InvalidOperationException("Invalid factory delegate type.")
         };
 
-        result.Should().Be(Value);
+        storageMock.Verify(result);
         storageMock.Verify(timesExpectedStoreCalled);
     }
-
 
     [Fact]
     public void GetOrAdd_RetrievesValueFromSecondaryStorage()
     {
-        var primaryStorageMock = new Mock<IStorageProvider<string, string>>();
+        var primaryStorageMock = new StorageMock();
 
-        var cacheProvider = new CacheProvider<string, string>(primaryStorageMock.Object, storageMock.GetMockCache(key, true));
+        var cacheProvider = new CacheProvider<string, string>(primaryStorageMock.GetMockCache(key, false), storageMock.GetMockCache(key, true));
         var result = cacheProvider.GetOrAdd(key, () => "newValue");
 
-        result.Should().Be(Value);
-        primaryStorageMock.Verify(p => p.Store(key, Value), Times.Once);
+        storageMock.Verify(result);
         storageMock.Verify(Times.Never());
+        primaryStorageMock.Verify(Times.Once());
     }
 }
