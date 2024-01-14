@@ -26,7 +26,7 @@ public class CacheProviderTests
         var actualSound = cacheProvider.GetOrAdd(animal, () => expectedSound);
         actualSound.Should().Be(expectedSound);
 
-        var existingSound = cacheProvider.GetOrAdd(animal, () => throw new OperationCanceledException("method should return initial description"));
+        var existingSound = cacheProvider.GetOrAdd(animal, () => throw new InvalidOperationException("method should return initial description"));
         existingSound.Should().Be(expectedSound);
     }
 
