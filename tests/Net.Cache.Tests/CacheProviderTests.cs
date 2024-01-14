@@ -7,76 +7,69 @@ namespace Net.Cache.Tests;
 public class CacheProviderTests
 {
     private const string key = "testKey";
-    private readonly Mock<IStorageProvider<string, string>> storageMock = new();
+    private readonly StorageMock storageMock = new();
+    public static IEnumerable<object[]> AnimalSoundsTestData()
+    {
+        yield return new object[] { "cat", "Meow" };
+        yield return new object[] { "dog", "Woof woof" };
+        yield return new object[] { "cow", "Moo" };
+        yield return new object[] { "duck", "Quack" };
+    }
 
-    [Fact]
-    public void GetOrCache_UsingInMemoryStorageProvider()
+    [Theory]
+    [MemberData(nameof(AnimalSoundsTestData))]
+    public void GetOrCache_AnimalSounds(string animal, string expectedSound)
     {
         var storageProvider = new InMemoryStorageProvider<string, string>();
         var cacheProvider = new CacheProvider<string, string>(storageProvider);
 
-        var cat = cacheProvider.GetOrAdd("cat", () => "Meow");
-        var dog = cacheProvider.GetOrAdd("dog", _ => "Woof woof");
-        cat.Should().Be("Meow");
-        dog.Should().Be("Woof woof");
+        var actualSound = cacheProvider.GetOrAdd(animal, () => expectedSound);
+        actualSound.Should().Be(expectedSound);
 
-        var existCatVoice = cacheProvider.GetOrAdd("cat", _ => "method should returns initial description");
-        var existDogVoice = cacheProvider.GetOrAdd("dog", _ => "method should returns initial description");
-        existCatVoice.Should().Be("Meow");
-        existDogVoice.Should().Be("Woof woof");
+        var existingSound = cacheProvider.GetOrAdd(animal, () => throw new InvalidOperationException("method should return initial description"));
+        existingSound.Should().Be(expectedSound);
     }
 
-    [Fact]
-    public void GetOrAdd_WithParameterlessFactory_CachesValue()
+    public static IEnumerable<object[]> GetOrAddTestData()
     {
-        var expectedValue = "testValue";
-        storageMock.Setup(s => s.TryGetValue(key, out expectedValue)).Returns(true);
+        // Test case: GetOrAdd_WithParameterlessFactory_CachesValue
+        yield return new object[] { true, Times.Never(), new Func<string>(() => "newValue"), null! };
 
-        var cacheProvider = new CacheProvider<string, string>(storageMock.Object);
-        var result = cacheProvider.GetOrAdd(key, () => "newValue");
+        // Test case: GetOrAdd_StoresValueInPrimaryStorage
+        yield return new object[] { false, Times.Once(), new Func<string>(() => "testValue"), null! };
 
-        result.Should().Be(expectedValue);
-        storageMock.Verify(s => s.Store(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        // Test case: GetOrAdd_WithFactoryAndParameters_CachesValue
+        yield return new object[] { false, Times.Once(), new Func<object[], string>(args => (string)args[0]), new object[] { "testValue" } };
     }
 
-    [Fact]
-    public void GetOrAdd_WithFactoryAndParameters_CachesValue()
+    [Theory]
+    [MemberData(nameof(GetOrAddTestData))]
+    public void GetOrAdd_CombinedTheory(
+        bool returns,
+        Times timesExpectedStoreCalled,
+        Delegate factory,
+        object[] factoryArgs)
     {
-        var expectedValue = "testValue";
-        storageMock.Setup(s => s.TryGetValue(key, out expectedValue)).Returns(false);
+        var cacheProvider = storageMock.GetMockCacheProvider(returns);
+        var result = factory switch
+        {
+            Func<string> parameterlessFactory => cacheProvider.GetOrAdd(key, parameterlessFactory),
+            Func<object[], string> parameterizedFactory => cacheProvider.GetOrAdd(key, parameterizedFactory, factoryArgs),
+            _ => throw new InvalidOperationException("Invalid factory delegate type.")
+        };
 
-        var cacheProvider = new CacheProvider<string, string>(storageMock.Object);
-        var result = cacheProvider.GetOrAdd(key, args => (string)args[0], expectedValue);
-
-        result.Should().Be(expectedValue);
-        storageMock.Verify(s => s.Store(key, expectedValue), Times.Once);
-    }
-
-    [Fact]
-    public void GetOrAdd_StoresValueInPrimaryStorage()
-    {
-        var value = "testValue";
-        storageMock.Setup(s => s.TryGetValue(key, out value)).Returns(false);
-
-        var cacheProvider = new CacheProvider<string, string>(storageMock.Object);
-        cacheProvider.GetOrAdd(key, () => value);
-
-        storageMock.Verify(s => s.Store(key, value), Times.Once);
+        storageMock.Verify(result, timesExpectedStoreCalled);
     }
 
     [Fact]
     public void GetOrAdd_RetrievesValueFromSecondaryStorage()
     {
-        var value = "testValue";
-        var primaryStorageMock = new Mock<IStorageProvider<string, string>>();
-        var secondaryStorageMock = new Mock<IStorageProvider<string, string>>();
-        secondaryStorageMock.Setup(s => s.TryGetValue(key, out value)).Returns(true);
+        var primaryStorageMock = new StorageMock();
 
-        var cacheProvider = new CacheProvider<string, string>(primaryStorageMock.Object, secondaryStorageMock.Object);
+        var cacheProvider = new CacheProvider<string, string>(primaryStorageMock.GetMockCache(key, false), storageMock.GetMockCache(key, true));
         var result = cacheProvider.GetOrAdd(key, () => "newValue");
 
-        result.Should().Be(value);
-        primaryStorageMock.Verify(p => p.Store(key, value), Times.Once);
-        secondaryStorageMock.Verify(s => s.Store(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        storageMock.Verify(result, Times.Never());
+        primaryStorageMock.Verify(Times.Once());
     }
 }
