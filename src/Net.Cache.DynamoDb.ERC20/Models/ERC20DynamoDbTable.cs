@@ -9,7 +9,7 @@ namespace Net.Cache.DynamoDb.ERC20.Models;
 public class ERC20DynamoDbTable
 {
     [DynamoDBHashKey]
-    public string HashKey => $"{ChainId}-{Address}".ToSha256();
+    public string HashKey { get; }
 
     [DynamoDBProperty]
     public BigInteger ChainId { get; }
@@ -27,9 +27,9 @@ public class ERC20DynamoDbTable
     public byte Decimals { get; }
 
     [DynamoDBProperty]
-    public BigInteger TotalSupply { get; }
+    public decimal TotalSupply { get; }
 
-    public ERC20DynamoDbTable(BigInteger chainId, EthereumAddress address, string name, string symbol, byte decimals, BigInteger totalSupply)
+    public ERC20DynamoDbTable(BigInteger chainId, EthereumAddress address, string name, string symbol, byte decimals, decimal totalSupply)
     {
         ChainId = chainId;
         Address = address;
@@ -37,5 +37,6 @@ public class ERC20DynamoDbTable
         Symbol = symbol;
         Decimals = decimals;
         TotalSupply = totalSupply;
+        HashKey = $"{ChainId}-{Address}".ToSha256();
     }
 }
