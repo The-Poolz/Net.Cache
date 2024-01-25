@@ -20,31 +20,11 @@ public class ERC20Service : IERC20Service
         contractService = web3.Eth.ERC20.GetContractService(contractAddress);
     }
 
-    public virtual byte Decimals()
-    {
-        return contractService.DecimalsQueryAsync()
-            .GetAwaiter()
-            .GetResult();
-    }
+    public virtual byte Decimals() => contractService.DecimalsQueryAsync().GetAwaiter().GetResult();
 
-    public virtual string Name()
-    {
-        return contractService.NameQueryAsync()
-            .GetAwaiter()
-            .GetResult();
-    }
+    public virtual string Name() => contractService.NameQueryAsync().GetAwaiter().GetResult();
 
-    public virtual string Symbol()
-    {
-        return contractService.SymbolQueryAsync()
-            .GetAwaiter()
-            .GetResult();
-    }
+    public virtual string Symbol() => contractService.SymbolQueryAsync().GetAwaiter().GetResult();
 
-    public virtual BigInteger TotalSupply()
-    {
-        return contractService.TotalSupplyQueryAsync()
-            .GetAwaiter()
-            .GetResult();
-    }
+    public virtual BigInteger TotalSupply() => contractService.TotalSupplyQueryAsync().GetAwaiter().GetResult();
 }
