@@ -17,7 +17,7 @@ public sealed class ERC20CacheProvider
 
     public ERC20DynamoDbTable GetOrAdd(string key, GetCacheRequest request)
     {
-        if (!storageProvider.TryGetValue(key, request.ERC20Service, out var storedValue))
+        if (!storageProvider.TryGetValue(key, request, out var storedValue))
         {
             storedValue = new ERC20DynamoDbTable(request.ChainId, request.ERC20Service);
         }

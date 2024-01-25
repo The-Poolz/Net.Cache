@@ -20,7 +20,7 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
             .GetResult();
     }
 
-    public bool TryGetValue(string key, IERC20Service erc20Service, [MaybeNullWhen(false)] out ERC20DynamoDbTable value)
+    public bool TryGetValue(string key, GetCacheRequest request, [MaybeNullWhen(false)] out ERC20DynamoDbTable value)
     {
         value = default;
         try
@@ -29,9 +29,14 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
                 .GetAwaiter()
                 .GetResult();
 
-            if (value == null) return false;
-
-            UpdateTotalSupply(value, erc20Service);
+            if (value == null)
+            {
+                return false;
+            }
+            if (request.UpdateTotalSupply)
+            {
+                UpdateTotalSupply(value, request.ERC20Service);
+            }
             return true;
         }
         catch
