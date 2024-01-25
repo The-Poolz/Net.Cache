@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Cache", "src\Net.Cache\Net.Cache.csproj", "{49DE83A0-6BBC-495B-8AC2-902176B429EC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{465E443D-C1F0-44C1-AFEE-27346549062C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{41B3D0C4-EDCF-42B5-9805-BA67A2557819}"
 EndProject
@@ -13,7 +16,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Cache.Tests", "tests\Ne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Cache.DynamoDb", "src\Net.Cache.DynamoDb\Net.Cache.DynamoDb.csproj", "{8696C816-355D-427A-9141-B213B7BC8492}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Cache.DynamoDb.Tests", "tests\Net.Cache.DynamoDb.Tests\Net.Cache.DynamoDb.Tests.csproj", "{4CBB2DF8-39A7-4BD9-8D24-27D678404F12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Cache.DynamoDb.Tests", "tests\Net.Cache.DynamoDb.Tests\Net.Cache.DynamoDb.Tests.csproj", "{4CBB2DF8-39A7-4BD9-8D24-27D678404F12}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Cache.DynamoDb.ERC20", "src\Net.Cache.DynamoDb.ERC20\Net.Cache.DynamoDb.ERC20.csproj", "{123E52F8-DDC4-4070-9671-66405AD9A186}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Cache.DynamoDb.ERC20.Tests", "tests\Net.Cache.DynamoDb.ERC20.Tests\Net.Cache.DynamoDb.ERC20.Tests.csproj", "{72EF5E83-9B07-414D-9755-9A3115D7DCC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +44,14 @@ Global
 		{4CBB2DF8-39A7-4BD9-8D24-27D678404F12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CBB2DF8-39A7-4BD9-8D24-27D678404F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CBB2DF8-39A7-4BD9-8D24-27D678404F12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{123E52F8-DDC4-4070-9671-66405AD9A186}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123E52F8-DDC4-4070-9671-66405AD9A186}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123E52F8-DDC4-4070-9671-66405AD9A186}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123E52F8-DDC4-4070-9671-66405AD9A186}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72EF5E83-9B07-414D-9755-9A3115D7DCC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72EF5E83-9B07-414D-9755-9A3115D7DCC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72EF5E83-9B07-414D-9755-9A3115D7DCC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72EF5E83-9B07-414D-9755-9A3115D7DCC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +61,8 @@ Global
 		{66CB4C95-0BC8-46E4-B379-2500F756CC72} = {41B3D0C4-EDCF-42B5-9805-BA67A2557819}
 		{8696C816-355D-427A-9141-B213B7BC8492} = {465E443D-C1F0-44C1-AFEE-27346549062C}
 		{4CBB2DF8-39A7-4BD9-8D24-27D678404F12} = {41B3D0C4-EDCF-42B5-9805-BA67A2557819}
+		{123E52F8-DDC4-4070-9671-66405AD9A186} = {465E443D-C1F0-44C1-AFEE-27346549062C}
+		{72EF5E83-9B07-414D-9755-9A3115D7DCC7} = {41B3D0C4-EDCF-42B5-9805-BA67A2557819}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AC133F3C-6217-4480-BE85-5FC5A69C31AA}
