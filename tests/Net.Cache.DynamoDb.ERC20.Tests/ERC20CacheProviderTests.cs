@@ -51,7 +51,7 @@ public class ERC20CacheProviderTests
         ));
     }
 
-    private IERC20Service MockERC20Service()
+    private static IERC20Service MockERC20Service()
     {
         var mock = new Mock<IERC20Service>();
         mock.Setup(x => x.ContractAddress)
