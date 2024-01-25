@@ -4,9 +4,7 @@ namespace Net.Cache.DynamoDb.ERC20.Cryptography;
 
 public static class SHA256
 {
-    public static string ToSha256(this string str) => StringToSha256(str);
-
-    public static string StringToSha256(string str)
+    public static string ToSha256(this string str)
     {
         using var sha256Hash = System.Security.Cryptography.SHA256.Create();
         var bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(str));
