@@ -19,21 +19,19 @@ public class ERC20CacheProviderTests
     private const long updatedTotalSupply = 5000000;
     private readonly string key = $"{chainId}-{contractAddress}".ToSha256();
     private readonly IERC20Service mockErc20Service;
-    private readonly ERC20CacheProvider erc20CacheProvider;
 
     public ERC20CacheProviderTests()
     {
         Environment.SetEnvironmentVariable("AWS_REGION", "us-east-1");
         mockErc20Service = MockERC20Service();
-
-        var mockContext = MockContext();
-        var erc20StorageProvider = new ERC20StorageProvider(mockContext);
-        erc20CacheProvider = new ERC20CacheProvider(erc20StorageProvider);
     }
 
     [Fact]
     internal void GetOrAdd_ItemReceivedFromCache_TotalSupplyHasBeenUpdated()
     {
+        var erc20StorageProvider = new ERC20StorageProvider(MockContext(true));
+        var erc20CacheProvider = new ERC20CacheProvider(erc20StorageProvider);
+
         var addedItem = erc20CacheProvider.GetOrAdd(key, new GetCacheRequest(chainId, mockErc20Service));
         var updatedItem = erc20CacheProvider.GetOrAdd(key, new GetCacheRequest(chainId, mockErc20Service));
 
@@ -42,6 +40,19 @@ public class ERC20CacheProviderTests
         ));
         updatedItem.Should().BeEquivalentTo(new ERC20DynamoDbTable(
             chainId, contractAddress, name, symbol, decimals, 0.0000000000050m
+        ));
+    }
+
+    [Fact]
+    internal void GetOrAdd_ItemSavedToCache()
+    {
+        var erc20StorageProvider = new ERC20StorageProvider(MockContext(false));
+        var erc20CacheProvider = new ERC20CacheProvider(erc20StorageProvider);
+
+        var addedItem = erc20CacheProvider.GetOrAdd(key, new GetCacheRequest(chainId, mockErc20Service));
+
+        addedItem.Should().BeEquivalentTo(new ERC20DynamoDbTable(
+            chainId, contractAddress, name, symbol, decimals, 0.0000000000055m
         ));
     }
 
@@ -63,16 +74,16 @@ public class ERC20CacheProviderTests
         return mock.Object;
     }
 
-    private IDynamoDBContext MockContext()
+    private IDynamoDBContext MockContext(bool setupLoad)
     {
         var mock = new Mock<IDynamoDBContext>();
-        mock.SetupSequence(x => x.LoadAsync<ERC20DynamoDbTable>(key, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ERC20DynamoDbTable(
-                chainId, contractAddress, name, symbol, decimals, 0.0000000000055m
-            ))
-            .ReturnsAsync(new ERC20DynamoDbTable(
-                chainId, contractAddress, name, symbol, decimals, 0.0000000000050m
-            ));
+        if (setupLoad)
+        {
+            var value = new ERC20DynamoDbTable(chainId, contractAddress, name, symbol, decimals, 0.0000000000055m);
+            mock.SetupSequence(x => x.LoadAsync<ERC20DynamoDbTable>(key, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(value)
+                .ReturnsAsync(value);
+        }
         return mock.Object;
     }
 }

@@ -10,18 +10,20 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
     public ERC20StorageProvider() { }
     public ERC20StorageProvider(IDynamoDBContext context) : base(context) { }
 
-    protected void UpdateTotalSupply(ERC20DynamoDbTable existValue, IERC20Service erc20Service)
+    protected ERC20DynamoDbTable UpdateTotalSupply(ERC20DynamoDbTable existValue, IERC20Service erc20Service)
     {
-        Context.SaveAsync(new ERC20DynamoDbTable(
-                existValue.ChainId,
-                existValue.Address,
-                existValue.Name,
-                existValue.Symbol,
-                existValue.Decimals,
-                erc20Service.TotalSupply()
-            ))
+        var updatedValue = new ERC20DynamoDbTable(
+            existValue.ChainId,
+            existValue.Address,
+            existValue.Name,
+            existValue.Symbol,
+            existValue.Decimals,
+            erc20Service.TotalSupply()
+        );
+        Context.SaveAsync(updatedValue)
             .GetAwaiter()
             .GetResult();
+        return updatedValue;
     }
 
     public bool TryGetValue(string key, GetCacheRequest request, [MaybeNullWhen(false)] out ERC20DynamoDbTable value)
@@ -39,7 +41,7 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
             }
             if (request.UpdateTotalSupply)
             {
-                UpdateTotalSupply(value, request.ERC20Service);
+                value = UpdateTotalSupply(value, request.ERC20Service);
             }
             return true;
         }
