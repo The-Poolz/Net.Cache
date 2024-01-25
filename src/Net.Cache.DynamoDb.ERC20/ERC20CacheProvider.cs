@@ -2,7 +2,7 @@
 
 namespace Net.Cache.DynamoDb.ERC20;
 
-public sealed class ERC20CacheProvider
+public class ERC20CacheProvider
 {
     private readonly ERC20StorageProvider storageProvider;
 
