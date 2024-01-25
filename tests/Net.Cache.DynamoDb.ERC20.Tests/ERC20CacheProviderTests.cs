@@ -4,6 +4,7 @@ using FluentAssertions;
 using Net.Cache.DynamoDb.ERC20.RPC;
 using Net.Cache.DynamoDb.ERC20.Models;
 using Net.Cache.DynamoDb.ERC20.Cryptography;
+using Amazon.DynamoDBv2.DataModel;
 
 namespace Net.Cache.DynamoDb.ERC20.Tests;
 
@@ -24,17 +25,10 @@ public class ERC20CacheProviderTests
     {
         Environment.SetEnvironmentVariable("AWS_REGION", "us-east-1");
         mockErc20Service = MockERC20Service();
-        erc20CacheProvider = new ERC20CacheProvider();
-    }
 
-    [Fact]
-    internal void GetOrAdd_ItemAddedToCache()
-    {
-        var result = erc20CacheProvider.GetOrAdd(key, new GetCacheRequest(chainId, mockErc20Service));
-
-        result.Should().BeEquivalentTo(new ERC20DynamoDbTable(
-            chainId, contractAddress, name, symbol, decimals, 0.0000000000055m
-        ));
+        var mockContext = MockContext();
+        var erc20StorageProvider = new ERC20StorageProvider(mockContext);
+        erc20CacheProvider = new ERC20CacheProvider(erc20StorageProvider);
     }
 
     [Fact]
@@ -66,6 +60,19 @@ public class ERC20CacheProviderTests
             .Returns(totalSupply)
             .Returns(updatedTotalSupply);
 
+        return mock.Object;
+    }
+
+    private IDynamoDBContext MockContext()
+    {
+        var mock = new Mock<IDynamoDBContext>();
+        mock.SetupSequence(x => x.LoadAsync<ERC20DynamoDbTable>(key, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ERC20DynamoDbTable(
+                chainId, contractAddress, name, symbol, decimals, 0.0000000000055m
+            ))
+            .ReturnsAsync(new ERC20DynamoDbTable(
+                chainId, contractAddress, name, symbol, decimals, 0.0000000000050m
+            ));
         return mock.Object;
     }
 }

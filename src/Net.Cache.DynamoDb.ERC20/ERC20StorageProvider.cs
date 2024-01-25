@@ -1,4 +1,5 @@
-﻿using Net.Cache.DynamoDb.ERC20.RPC;
+﻿using Amazon.DynamoDBv2.DataModel;
+using Net.Cache.DynamoDb.ERC20.RPC;
 using Net.Cache.DynamoDb.ERC20.Models;
 using System.Diagnostics.CodeAnalysis;
 
@@ -6,6 +7,9 @@ namespace Net.Cache.DynamoDb.ERC20;
 
 public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoDbTable>
 {
+    public ERC20StorageProvider() { }
+    public ERC20StorageProvider(IDynamoDBContext context) : base(context) { }
+
     protected void UpdateTotalSupply(ERC20DynamoDbTable existValue, IERC20Service erc20Service)
     {
         Context.SaveAsync(new ERC20DynamoDbTable(
