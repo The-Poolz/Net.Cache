@@ -33,7 +33,6 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
 
             UpdateTotalSupply(value, erc20Service);
             return true;
-
         }
         catch
         {
