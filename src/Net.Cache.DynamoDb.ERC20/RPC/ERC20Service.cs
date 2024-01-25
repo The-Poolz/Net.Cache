@@ -5,7 +5,7 @@ using Nethereum.Contracts.Standards.ERC20;
 
 namespace Net.Cache.DynamoDb.ERC20.RPC;
 
-public class ERC20Service
+public class ERC20Service : IERC20Service
 {
     private readonly ERC20ContractService contractService;
     public EthereumAddress ContractAddress { get; }
