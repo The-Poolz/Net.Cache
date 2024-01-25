@@ -1,33 +1,26 @@
-﻿using System.Numerics;
-using Net.Web3.EthereumWallet;
-using Net.Cache.DynamoDb.ERC20.RPC;
-using Net.Cache.DynamoDb.ERC20.Models;
+﻿using Net.Cache.DynamoDb.ERC20.Models;
 
 namespace Net.Cache.DynamoDb.ERC20;
 
-public class ERC20CacheProvider : CacheProvider<string, ERC20DynamoDbTable>
+public sealed class ERC20CacheProvider
 {
+    private readonly ERC20StorageProvider storageProvider;
+
     public ERC20CacheProvider()
-        : base(new DynamoDbStorageProvider<string, ERC20DynamoDbTable>())
+        : this(new ERC20StorageProvider())
     { }
 
-    public ERC20CacheProvider(DynamoDbStorageProvider<string, ERC20DynamoDbTable> storageProvider)
-        : base(storageProvider)
-    { }
-
-    public virtual ERC20DynamoDbTable GetOrAdd(string key, BigInteger chainId, IERC20Service erc20Service)
+    public ERC20CacheProvider(ERC20StorageProvider storageProvider)
     {
-        var decimals = erc20Service.Decimals();
-        return GetOrAdd(key, _ => new ERC20DynamoDbTable(
-            chainId,
-            erc20Service.ContractAddress,
-            erc20Service.Name(),
-            erc20Service.Symbol(),
-            decimals,
-            Nethereum.Web3.Web3.Convert.FromWei(erc20Service.TotalSupply(), decimals)
-        ));
+        this.storageProvider = storageProvider;
     }
 
-    public virtual ERC20DynamoDbTable GetOrAdd(string key, BigInteger chainId, EthereumAddress contractAddress, string rpcUrl) =>
-        GetOrAdd(key, chainId, new ERC20Service(rpcUrl, contractAddress));
+    public ERC20DynamoDbTable GetOrAdd(string key, GetCacheRequest request)
+    {
+        if (!storageProvider.TryGetValue(key, request.ERC20Service, out var storedValue))
+        {
+            storedValue = new ERC20DynamoDbTable(request.ChainId, request.ERC20Service);
+        }
+        return storedValue;
+    }
 }

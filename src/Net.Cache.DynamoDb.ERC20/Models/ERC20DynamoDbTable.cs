@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Net.Web3.EthereumWallet;
 using Amazon.DynamoDBv2.DataModel;
+using Net.Cache.DynamoDb.ERC20.RPC;
 using Net.Cache.DynamoDb.ERC20.Cryptography;
 
 namespace Net.Cache.DynamoDb.ERC20.Models;
@@ -37,6 +38,28 @@ public class ERC20DynamoDbTable
         Symbol = symbol;
         Decimals = decimals;
         TotalSupply = totalSupply;
+        HashKey = $"{ChainId}-{Address}".ToSha256();
+    }
+
+    public ERC20DynamoDbTable(BigInteger chainId, EthereumAddress address, string name, string symbol, byte decimals, BigInteger totalSupply)
+    {
+        ChainId = chainId;
+        Address = address;
+        Name = name;
+        Symbol = symbol;
+        Decimals = decimals;
+        TotalSupply = Nethereum.Web3.Web3.Convert.FromWei(totalSupply, decimals);
+        HashKey = $"{ChainId}-{Address}".ToSha256();
+    }
+
+    public ERC20DynamoDbTable(BigInteger chainId, IERC20Service erc20Service)
+    {
+        ChainId = chainId;
+        Address = erc20Service.ContractAddress;
+        Name = erc20Service.Name();
+        Symbol = erc20Service.Symbol();
+        Decimals = erc20Service.Decimals();
+        TotalSupply = Nethereum.Web3.Web3.Convert.FromWei(erc20Service.TotalSupply(), Decimals);
         HashKey = $"{ChainId}-{Address}".ToSha256();
     }
 }
