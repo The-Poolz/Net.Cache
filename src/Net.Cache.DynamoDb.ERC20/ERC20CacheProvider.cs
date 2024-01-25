@@ -11,7 +11,11 @@ public class ERC20CacheProvider : CacheProvider<string, ERC20DynamoDbTable>
         : base(new DynamoDbStorageProvider<string, ERC20DynamoDbTable>())
     { }
 
-    public virtual ERC20DynamoDbTable GetOrAdd(string key, BigInteger chainId, ERC20Service erc20Service)
+    public ERC20CacheProvider(DynamoDbStorageProvider<string, ERC20DynamoDbTable> storageProvider)
+        : base(storageProvider)
+    { }
+
+    public virtual ERC20DynamoDbTable GetOrAdd(string key, BigInteger chainId, IERC20Service erc20Service)
     {
         var decimals = erc20Service.Decimals();
         return GetOrAdd(key, _ => new ERC20DynamoDbTable(
