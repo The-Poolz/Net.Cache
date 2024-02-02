@@ -22,7 +22,7 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// Initializes a new instance of the <see cref="DynamoDbStorageProvider{TKey, TValue}"/> class using the default Amazon DynamoDB client.
     /// This constructor is useful for quick setups where the default client configuration is sufficient.
     /// </summary>
-    /// <param name="tableName"></param>
+    /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(string? tableName = "")
         : this(new AmazonDynamoDBClient(), tableName)
     { }
@@ -32,7 +32,7 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// This constructor allows for more control over the DynamoDB client configuration.
     /// </summary>
     /// <param name="client">The DynamoDB client to be used for database operations.</param>
-    /// <param name="tableName"></param>
+    /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(IAmazonDynamoDB client, string? tableName = "")
     {
         this.tableName = tableName;
@@ -44,7 +44,7 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// This constructor provides the most flexibility, allowing the use of a custom-configured DynamoDB context.
     /// </summary>
     /// <param name="context">The DynamoDB context to be used for database operations.</param>
-    /// <param name="tableName"></param>
+    /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(IDynamoDBContext context, string? tableName = "")
     {
         this.tableName = tableName;
