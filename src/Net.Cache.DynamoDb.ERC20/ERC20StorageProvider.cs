@@ -33,30 +33,17 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
 
     public bool TryGetValue(string key, GetCacheRequest request, [MaybeNullWhen(false)] out ERC20DynamoDbTable value)
     {
-        value = default;
-        try
-        {
-            var operationConfig = string.IsNullOrWhiteSpace(tableName) ? null : new DynamoDBOperationConfig
-            {
-                OverrideTableName = tableName
-            };
-            value = Context.LoadAsync<ERC20DynamoDbTable>(key, operationConfig)
-                .GetAwaiter()
-                .GetResult();
-
-            if (value == null)
-            {
-                return false;
-            }
-            if (request.UpdateTotalSupply)
-            {
-                value = UpdateTotalSupply(value, request.ERC20Service);
-            }
-            return true;
-        }
-        catch
+        var baseCall = base.TryGetValue(key, out value);
+        if (!baseCall)
         {
             return false;
         }
+
+        if (value != null && request.UpdateTotalSupply)
+        {
+            value = UpdateTotalSupply(value, request.ERC20Service);
+        }
+
+        return value != null;
     }
 }

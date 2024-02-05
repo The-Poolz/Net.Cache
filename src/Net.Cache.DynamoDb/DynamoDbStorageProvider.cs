@@ -10,14 +10,12 @@ namespace Net.Cache.DynamoDb;
 /// </summary>
 /// <typeparam name="TKey">The type of keys used for identifying values. Must be equatable and non-nullable.</typeparam>
 /// <typeparam name="TValue">The type of values to be stored. This type is a class.</typeparam>
-public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TValue>
+public class DynamoDbStorageProvider<TKey, TValue> : WithDynamoDbContext, IStorageProvider<TKey, TValue>
     where TKey : IEquatable<TKey>
     where TValue : class
 {
     protected const string EmptyString = "";
     protected readonly string? tableName;
-    protected readonly Lazy<IDynamoDBContext> lazyContext;
-    protected IDynamoDBContext Context => lazyContext.Value;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DynamoDbStorageProvider{TKey, TValue}"/> class using the default Amazon DynamoDB client.
@@ -35,9 +33,9 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// <param name="client">The DynamoDB client to be used for database operations.</param>
     /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(IAmazonDynamoDB client, string? tableName = EmptyString)
+        : base(client)
     {
         this.tableName = tableName;
-        lazyContext = new Lazy<IDynamoDBContext>(new DynamoDBContext(client));
     }
 
     /// <summary>
@@ -47,9 +45,9 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// <param name="context">The DynamoDB context to be used for database operations.</param>
     /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(IDynamoDBContext context, string? tableName = EmptyString)
+        : base(context)
     {
         this.tableName = tableName;
-        lazyContext = new Lazy<IDynamoDBContext>(context);
     }
 
     /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Store(TKey, TValue)"/>
@@ -71,11 +69,19 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
             value = Context.LoadAsync<TValue>(key, operationConfig)
                 .GetAwaiter()
                 .GetResult();
-            return value != null;
+
+            if (value == null)
+            {
+                return false;
+            }
+            ProcessRetrievedValue(ref value);
+            return true;
         }
         catch
         {
             return false;
         }
     }
+
+    protected virtual void ProcessRetrievedValue(ref TValue value) { }
 }
