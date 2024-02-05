@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 using Net.Web3.EthereumWallet;
+using Net.Cryptography.SHA256;
 using Amazon.DynamoDBv2.DataModel;
 using Net.Cache.DynamoDb.ERC20.RPC;
-using Net.Cache.DynamoDb.ERC20.Cryptography;
 
 namespace Net.Cache.DynamoDb.ERC20.Models;
 
