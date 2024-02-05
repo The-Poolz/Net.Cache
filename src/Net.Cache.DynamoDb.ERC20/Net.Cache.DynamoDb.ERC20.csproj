@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Net.Cryptography.SHA256" Version="1.0.0" />
     <PackageReference Include="Net.Web3.EthereumWallet" Version="1.0.0" />
     <PackageReference Include="Nethereum.Web3" Version="4.18.0" />
   </ItemGroup>
