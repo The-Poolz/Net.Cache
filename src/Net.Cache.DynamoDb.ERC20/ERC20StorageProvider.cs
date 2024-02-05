@@ -7,11 +7,11 @@ namespace Net.Cache.DynamoDb.ERC20;
 
 public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoDbTable>
 {
-    public ERC20StorageProvider(string? tableName = "")
+    public ERC20StorageProvider(string? tableName = EmptyString)
         : base(tableName)
     { }
 
-    public ERC20StorageProvider(IDynamoDBContext context, string? tableName = "")
+    public ERC20StorageProvider(IDynamoDBContext context, string? tableName = EmptyString)
         : base(context, tableName)
     { }
 
