@@ -41,7 +41,7 @@ public class DynamoDbStorageProviderTests
     {
         var expectedValue = new object();
         const string key = "testKey";
-        mockContext.Setup(c => c.LoadAsync<object>(key, default)).ReturnsAsync(expectedValue);
+        mockContext.Setup(c => c.LoadAsync<object>(key, null, default)).ReturnsAsync(expectedValue);
         var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
 
         var result = provider.TryGetValue(key, out var value);
@@ -54,7 +54,7 @@ public class DynamoDbStorageProviderTests
     public void TryGetValue_WhenValueDoesNotExist_ShouldReturnFalse()
     {
         const string key = "testKey";
-        mockContext.Setup(c => c.LoadAsync<object>(key, default)).ReturnsAsync((object)null!);
+        mockContext.Setup(c => c.LoadAsync<object>(key, null, default)).ReturnsAsync((object)null!);
         var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
 
         var result = provider.TryGetValue(key, out var value);
@@ -67,7 +67,7 @@ public class DynamoDbStorageProviderTests
     public void TryGetValue_WhenExceptionOccurs_ShouldReturnFalse()
     {
         const string key = "testKey";
-        mockContext.Setup(c => c.LoadAsync<object>(key, default)).ThrowsAsync(new Exception());
+        mockContext.Setup(c => c.LoadAsync<object>(key, null, default)).ThrowsAsync(new Exception());
         var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
 
         var result = provider.TryGetValue(key, out var value);

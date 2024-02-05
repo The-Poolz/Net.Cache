@@ -7,8 +7,13 @@ namespace Net.Cache.DynamoDb.ERC20;
 
 public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoDbTable>
 {
-    public ERC20StorageProvider() { }
-    public ERC20StorageProvider(IDynamoDBContext context) : base(context) { }
+    public ERC20StorageProvider(string? tableName = EmptyString)
+        : base(tableName)
+    { }
+
+    public ERC20StorageProvider(IDynamoDBContext context, string? tableName = EmptyString)
+        : base(context, tableName)
+    { }
 
     protected ERC20DynamoDbTable UpdateTotalSupply(ERC20DynamoDbTable existValue, IERC20Service erc20Service)
     {
@@ -31,7 +36,11 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
         value = default;
         try
         {
-            value = Context.LoadAsync<ERC20DynamoDbTable>(key)
+            var operationConfig = string.IsNullOrWhiteSpace(tableName) ? null : new DynamoDBOperationConfig
+            {
+                OverrideTableName = tableName
+            };
+            value = Context.LoadAsync<ERC20DynamoDbTable>(key, operationConfig)
                 .GetAwaiter()
                 .GetResult();
 
