@@ -28,7 +28,6 @@ public class GetCacheRequest
     /// </summary>
     public bool UpdateTotalSupply { get; }
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="GetCacheRequest"/> class with specified chain ID and contract address.
     /// </summary>
