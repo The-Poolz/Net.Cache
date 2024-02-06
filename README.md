@@ -26,3 +26,13 @@ Welcome to the Net.Cache repository! This repository hosts two related .NET libr
 - **Key Features**: Offers an abstract base class for creating DynamoDB storage providers.
 - **Usage**: Best suited for applications using Amazon DynamoDB for key-value storage.
 - **[Read More](https://github.com/The-Poolz/Net.Cache/tree/master/src/Net.Cache.DynamoDb/README.md)**
+
+### Net.Cache.DynamoDb.ERC20
+
+- **Description**: A specialized extension for caching ERC20 token information in Amazon DynamoDB.
+- **Key Features**:
+  - Caches ERC20 token details like name, symbol, decimals, and total supply.
+  - Generates unique hash keys for efficient data retrieval.
+  - Supports dynamic updates of token total supply in the cache.
+- **Usage**: Ideal for blockchain-based applications or services that interact with ERC20 tokens and require efficient caching solutions.
+- **[Read More](https://github.com/The-Poolz/Net.Cache/tree/master/src/Net.Cache.DynamoDb.ERC20/README.md)**
