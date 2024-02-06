@@ -18,6 +18,7 @@
 Full changes can found here: https://github.com/The-Poolz/Net.Cache/releases/tag/v1.2.0</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>Cache DynamoDb ERC20</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
