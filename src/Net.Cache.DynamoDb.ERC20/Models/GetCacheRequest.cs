@@ -39,7 +39,7 @@ public class GetCacheRequest
     /// This constructor creates an instance of the <see cref="ERC20Service"/> class using the provided RPC URL and contract address.
     /// </remarks>
     public GetCacheRequest(BigInteger chainId, EthereumAddress contractAddress, string rpcUrl, bool updateTotalSupply = true)
-        : this(chainId, new ERC20Service(rpcUrl, contractAddress))
+        : this(chainId, new ERC20Service(rpcUrl, contractAddress), updateTotalSupply)
     { }
 
     /// <summary>

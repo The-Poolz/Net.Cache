@@ -19,7 +19,7 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
     /// Initializes a new instance of the <see cref="ERC20StorageProvider"/> class with an optional <paramref name="tableName"/>.
     /// </summary>
     /// <param name="tableName">The name of the DynamoDB table to be used. If not provided, a default table name is used.</param>
-    public ERC20StorageProvider(string? tableName = EmptyString)
+    public ERC20StorageProvider(string tableName = EmptyString)
         : base(tableName)
     { }
 
@@ -28,7 +28,7 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
     /// </summary>
     /// <param name="context">The DynamoDB context to be used for operations.</param>
     /// <param name="tableName">The name of the DynamoDB table to be used. If not provided, a default table name is used.</param>
-    public ERC20StorageProvider(IDynamoDBContext context, string? tableName = EmptyString)
+    public ERC20StorageProvider(IDynamoDBContext context, string tableName = EmptyString)
         : base(context, tableName)
     { }
 
