@@ -80,7 +80,7 @@ public class ERC20CacheProviderTests
         if (setupLoad)
         {
             var value = new ERC20DynamoDbTable(chainId, contractAddress, name, symbol, decimals, 0.0000000000055m);
-            mock.SetupSequence(x => x.LoadAsync<ERC20DynamoDbTable>(key, It.IsAny<CancellationToken>()))
+            mock.SetupSequence(x => x.LoadAsync<ERC20DynamoDbTable>(key, It.IsAny<DynamoDBOperationConfig>(), default))
                 .ReturnsAsync(value)
                 .ReturnsAsync(value);
         }
