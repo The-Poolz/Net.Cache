@@ -10,12 +10,14 @@ namespace Net.Cache.DynamoDb;
 /// </summary>
 /// <typeparam name="TKey">The type of keys used for identifying values. Must be equatable and non-nullable.</typeparam>
 /// <typeparam name="TValue">The type of values to be stored. This type is a class.</typeparam>
-public class DynamoDbStorageProvider<TKey, TValue> : WithDynamoDbContext, IStorageProvider<TKey, TValue>
+public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TValue>
     where TKey : IEquatable<TKey>
     where TValue : class
 {
     protected const string EmptyString = "";
     protected readonly string? tableName;
+    protected readonly Lazy<IDynamoDBContext> lazyContext;
+    protected IDynamoDBContext Context => lazyContext.Value;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DynamoDbStorageProvider{TKey, TValue}"/> class using the default Amazon DynamoDB client.
@@ -33,8 +35,8 @@ public class DynamoDbStorageProvider<TKey, TValue> : WithDynamoDbContext, IStora
     /// <param name="client">The DynamoDB client to be used for database operations.</param>
     /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(IAmazonDynamoDB client, string? tableName = EmptyString)
-        : base(client)
     {
+        lazyContext = new Lazy<IDynamoDBContext>(new DynamoDBContext(client));
         this.tableName = tableName;
     }
 
@@ -45,8 +47,8 @@ public class DynamoDbStorageProvider<TKey, TValue> : WithDynamoDbContext, IStora
     /// <param name="context">The DynamoDB context to be used for database operations.</param>
     /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(IDynamoDBContext context, string? tableName = EmptyString)
-        : base(context)
     {
+        lazyContext = new Lazy<IDynamoDBContext>(context);
         this.tableName = tableName;
     }
 
@@ -70,18 +72,11 @@ public class DynamoDbStorageProvider<TKey, TValue> : WithDynamoDbContext, IStora
                 .GetAwaiter()
                 .GetResult();
 
-            if (value == null)
-            {
-                return false;
-            }
-            ProcessRetrievedValue(ref value);
-            return true;
+            return value != null;
         }
         catch
         {
             return false;
         }
     }
-
-    protected virtual void ProcessRetrievedValue(ref TValue value) { }
 }
