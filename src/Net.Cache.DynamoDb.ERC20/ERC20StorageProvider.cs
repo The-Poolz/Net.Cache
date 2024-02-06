@@ -33,17 +33,16 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
 
     public bool TryGetValue(string key, GetCacheRequest request, [MaybeNullWhen(false)] out ERC20DynamoDbTable value)
     {
-        var baseCall = base.TryGetValue(key, out value);
-        if (!baseCall)
+        if (!base.TryGetValue(key, out value))
         {
             return false;
         }
 
-        if (value != null && request.UpdateTotalSupply)
+        if (request.UpdateTotalSupply)
         {
             value = UpdateTotalSupply(value, request.ERC20Service);
         }
 
-        return value != null;
+        return true;
     }
 }
