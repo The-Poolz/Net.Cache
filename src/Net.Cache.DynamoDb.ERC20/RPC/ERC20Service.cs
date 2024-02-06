@@ -32,7 +32,7 @@ public class ERC20Service : IERC20Service
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ERC20Service"/> class using a Web3 instance and contract address.
+    /// Initializes a new instance of the <see cref="ERC20Service"/> class using a <see cref="Nethereum.Web3.IWeb3"/> instance and contract address.
     /// </summary>
     /// <param name="web3">The Web3 instance for interacting with the Ethereum network.</param>
     /// <param name="contractAddress">The ERC20 token contract address.</param>

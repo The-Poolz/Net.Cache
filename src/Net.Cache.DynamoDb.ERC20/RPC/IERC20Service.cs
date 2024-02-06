@@ -40,6 +40,6 @@ public interface IERC20Service
     /// <summary>
     /// Retrieves the total supply of the ERC20 token.
     /// </summary>
-    /// <returns>The total supply of the ERC20 token as a BigInteger.</returns>
+    /// <returns>The total supply of the ERC20 token as a <see cref="BigInteger"/>.</returns>
     public BigInteger TotalSupply();
 }

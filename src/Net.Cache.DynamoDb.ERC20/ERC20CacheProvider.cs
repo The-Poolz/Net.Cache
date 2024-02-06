@@ -7,22 +7,21 @@ namespace Net.Cache.DynamoDb.ERC20;
 /// </summary>
 /// <remarks>
 /// This provider encapsulates logic for retrieving and storing ERC20 token details
-/// within a DynamoDB cache. It supports operations to get existing cache entries
-/// or add new entries when required.
+/// within a DynamoDB cache. It supports operations to get existing cache entries or add new entries when required.
 /// </remarks>
 public class ERC20CacheProvider
 {
     private readonly ERC20StorageProvider storageProvider;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ERC20CacheProvider"/> class with a default storage provider.
+    /// Initializes a new instance of the <see cref="ERC20CacheProvider"/> class with a default <see cref="ERC20StorageProvider"/> storage provider.
     /// </summary>
     public ERC20CacheProvider()
         : this(new ERC20StorageProvider())
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ERC20CacheProvider"/> class with a specified storage provider.
+    /// Initializes a new instance of the <see cref="ERC20CacheProvider"/> class with a specified <see cref="ERC20StorageProvider"/> storage provider.
     /// </summary>
     /// <param name="storageProvider">The storage provider to be used for caching.</param>
     public ERC20CacheProvider(ERC20StorageProvider storageProvider)

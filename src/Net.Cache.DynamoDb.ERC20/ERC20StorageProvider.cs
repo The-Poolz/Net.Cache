@@ -16,7 +16,7 @@ namespace Net.Cache.DynamoDb.ERC20;
 public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoDbTable>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ERC20StorageProvider"/> class with an optional table name.
+    /// Initializes a new instance of the <see cref="ERC20StorageProvider"/> class with an optional <paramref name="tableName"/>.
     /// </summary>
     /// <param name="tableName">The name of the DynamoDB table to be used. If not provided, a default table name is used.</param>
     public ERC20StorageProvider(string? tableName = EmptyString)
@@ -24,7 +24,7 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
     { }
 
     /// <summary>
-    /// Initializes a new instance of the ERC20StorageProvider class with a specific DynamoDB context and an optional table name.
+    /// Initializes a new instance of the <see cref="ERC20StorageProvider"/> class with a specific DynamoDB <paramref name="context"/> and an optional <paramref name="tableName"/>.
     /// </summary>
     /// <param name="context">The DynamoDB context to be used for operations.</param>
     /// <param name="tableName">The name of the DynamoDB table to be used. If not provided, a default table name is used.</param>

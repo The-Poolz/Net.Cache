@@ -69,7 +69,7 @@ public class ERC20DynamoDbTable
     /// <param name="decimals">The decimals of the ERC20 token.</param>
     /// <param name="totalSupply">The total supply of the ERC20 token.</param>
     /// <remarks>
-    /// This constructor calculates the total supply based on the provided value and decimals.
+    /// This constructor expects an already calculated <paramref name="totalSupply"/> based on the <see cref="BigInteger"/> total supply value and <paramref name="decimals"/>.
     /// </remarks>
     public ERC20DynamoDbTable(BigInteger chainId, EthereumAddress address, string name, string symbol, byte decimals, decimal totalSupply)
     {
@@ -83,16 +83,16 @@ public class ERC20DynamoDbTable
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ERC20DynamoDbTable"/> class with specified token details and total supply in BigInteger.
+    /// Initializes a new instance of the <see cref="ERC20DynamoDbTable"/> class with specified token details and total supply in <see cref="BigInteger"/>.
     /// </summary>
     /// <param name="chainId">The block-chain chain ID.</param>
     /// <param name="address">The ERC20 token contract address.</param>
     /// <param name="name">The name of the ERC20 token.</param>
     /// <param name="symbol">The symbol of the ERC20 token.</param>
     /// <param name="decimals">The decimals of the ERC20 token.</param>
-    /// <param name="totalSupply">The total supply of the ERC20 token in BigInteger format.</param>
+    /// <param name="totalSupply">The total supply of the ERC20 token in <see cref="BigInteger"/> format.</param>
     /// <remarks>
-    /// This constructor converts the total supply from BigInteger to decimal, considering the token's decimals.
+    /// This constructor converts the <paramref name="totalSupply"/> from <see cref="BigInteger"/> to <see langword="decimal"/>, considering the token's <paramref name="decimals"/>.
     /// </remarks>
     public ERC20DynamoDbTable(BigInteger chainId, EthereumAddress address, string name, string symbol, byte decimals, BigInteger totalSupply)
     {
@@ -106,12 +106,12 @@ public class ERC20DynamoDbTable
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ERC20DynamoDbTable"/> class using an ERC20 service to populate token details.
+    /// Initializes a new instance of the <see cref="ERC20DynamoDbTable"/> class using an <see cref="IERC20Service"/> to populate token details.
     /// </summary>
     /// <param name="chainId">The block-chain chain ID.</param>
     /// <param name="erc20Service">The ERC20 service providing access to token details.</param>
     /// <remarks>
-    /// This constructor retrieves token details such as name, symbol, decimals, and total supply from the provided ERC20 service.
+    /// This constructor retrieves token details such as name, symbol, decimals, and total supply from the provided <see cref="IERC20Service"/>.
     /// </remarks>
     public ERC20DynamoDbTable(BigInteger chainId, IERC20Service erc20Service)
     {
