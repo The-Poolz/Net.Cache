@@ -11,7 +11,7 @@ public class GetCacheRequest
     public bool UpdateTotalSupply { get; }
 
     public GetCacheRequest(BigInteger chainId, EthereumAddress contractAddress, string rpcUrl, bool updateTotalSupply = true)
-        : this(chainId, new ERC20Service(rpcUrl, contractAddress))
+        : this(chainId, new ERC20Service(rpcUrl, contractAddress), updateTotalSupply)
     { }
 
     public GetCacheRequest(BigInteger chainId, IERC20Service erc20Service, bool updateTotalSupply = true)
