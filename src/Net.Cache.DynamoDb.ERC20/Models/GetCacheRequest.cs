@@ -4,16 +4,55 @@ using Net.Cache.DynamoDb.ERC20.RPC;
 
 namespace Net.Cache.DynamoDb.ERC20.Models;
 
+/// <summary>
+/// Represents a request to retrieve or update ERC20 token information in the cache.
+/// </summary>
+/// <remarks>
+/// This class encapsulates the details necessary for fetching or updating the cached data of an ERC20 token,
+/// including the block-chain chain ID, the ERC20 service, and a flag indicating whether to update the total supply.
+/// </remarks>
 public class GetCacheRequest
 {
+    /// <summary>
+    /// Gets the block-chain chain ID for the request.
+    /// </summary>
     public BigInteger ChainId { get; }
+
+    /// <summary>
+    /// Gets the ERC20 service used to interact with the ERC20 token contract.
+    /// </summary>
     public IERC20Service ERC20Service { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the total supply of the token should be updated in the cache.
+    /// </summary>
     public bool UpdateTotalSupply { get; }
 
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GetCacheRequest"/> class with specified chain ID and contract address.
+    /// </summary>
+    /// <param name="chainId">The block-chain chain ID.</param>
+    /// <param name="contractAddress">The ERC20 token contract address.</param>
+    /// <param name="rpcUrl">The URL of the RPC endpoint to interact with the block-chain.</param>
+    /// <param name="updateTotalSupply">Optional. Indicates whether to update the total supply of the token in the cache. Defaults to true.</param>
+    /// <remarks>
+    /// This constructor creates an instance of the <see cref="ERC20Service"/> class using the provided RPC URL and contract address.
+    /// </remarks>
     public GetCacheRequest(BigInteger chainId, EthereumAddress contractAddress, string rpcUrl, bool updateTotalSupply = true)
         : this(chainId, new ERC20Service(rpcUrl, contractAddress))
     { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GetCacheRequest"/> class with a specified ERC20 service.
+    /// </summary>
+    /// <param name="chainId">The block-chain chain ID.</param>
+    /// <param name="erc20Service">The ERC20 service providing access to the token's details.</param>
+    /// <param name="updateTotalSupply">Optional. Indicates whether to update the total supply of the token in the cache. Defaults to true.</param>
+    /// <remarks>
+    /// This constructor allows for more flexibility by accepting an instance of an ERC20 service,
+    /// enabling the use of customized or mock services for testing purposes.
+    /// </remarks>
     public GetCacheRequest(BigInteger chainId, IERC20Service erc20Service, bool updateTotalSupply = true)
     {
         ChainId = chainId;
