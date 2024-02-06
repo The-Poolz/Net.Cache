@@ -4,6 +4,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>1.2.0</Version>
+    <PackageId>Net.Cache.DynamoDb.ERC20</PackageId>
+    <Authors>ArdenHide, Lomet</Authors>
+    <Company>The-Poolz</Company>
+    <Product>Net.Cache.DynamoDb.ERC20</Product>
   </PropertyGroup>
 
   <ItemGroup>
