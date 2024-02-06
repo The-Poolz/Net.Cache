@@ -36,8 +36,8 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(IAmazonDynamoDB client, string? tableName = EmptyString)
     {
-        this.tableName = tableName;
         lazyContext = new Lazy<IDynamoDBContext>(new DynamoDBContext(client));
+        this.tableName = tableName;
     }
 
     /// <summary>
@@ -48,8 +48,8 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
     public DynamoDbStorageProvider(IDynamoDBContext context, string? tableName = EmptyString)
     {
-        this.tableName = tableName;
         lazyContext = new Lazy<IDynamoDBContext>(context);
+        this.tableName = tableName;
     }
 
     /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Store(TKey, TValue)"/>
@@ -71,6 +71,7 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
             value = Context.LoadAsync<TValue>(key, operationConfig)
                 .GetAwaiter()
                 .GetResult();
+
             return value != null;
         }
         catch
