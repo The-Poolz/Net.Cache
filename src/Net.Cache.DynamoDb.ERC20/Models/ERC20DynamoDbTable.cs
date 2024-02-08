@@ -21,43 +21,43 @@ public class ERC20DynamoDbTable
     /// Gets the hash key for the ERC20 token entry, uniquely generated based on the chain ID and token address.
     /// </summary>
     [DynamoDBHashKey]
-    public string HashKey { get; }
+    public string HashKey { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets the block-chain chain ID where the ERC20 token is located.
     /// </summary>
     [DynamoDBProperty]
-    public BigInteger ChainId { get; }
+    public long ChainId { get; set; }
 
     /// <summary>
     /// Gets the ERC20 token contract address.
     /// </summary>
     [DynamoDBProperty]
-    public string Address { get; }
+    public string Address { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets the name of the ERC20 token.
     /// </summary>
     [DynamoDBProperty]
-    public string Name { get; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets the symbol of the ERC20 token.
     /// </summary>
     [DynamoDBProperty]
-    public string Symbol { get; }
+    public string Symbol { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets the decimals of the ERC20 token, indicating how divisible it is.
     /// </summary>
     [DynamoDBProperty]
-    public byte Decimals { get; }
+    public byte Decimals { get; set; }
 
     /// <summary>
     /// Gets the total supply of the ERC20 token.
     /// </summary>
     [DynamoDBProperty]
-    public decimal TotalSupply { get; }
+    public decimal TotalSupply { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ERC20DynamoDbTable"/> class with specified token details.
@@ -71,7 +71,7 @@ public class ERC20DynamoDbTable
     /// <remarks>
     /// This constructor expects an already calculated <paramref name="totalSupply"/> based on the <see cref="BigInteger"/> total supply value and <paramref name="decimals"/>.
     /// </remarks>
-    public ERC20DynamoDbTable(BigInteger chainId, EthereumAddress address, string name, string symbol, byte decimals, decimal totalSupply)
+    public ERC20DynamoDbTable(long chainId, EthereumAddress address, string name, string symbol, byte decimals, decimal totalSupply)
     {
         ChainId = chainId;
         Address = address;
@@ -94,7 +94,7 @@ public class ERC20DynamoDbTable
     /// <remarks>
     /// This constructor converts the <paramref name="totalSupply"/> from <see cref="BigInteger"/> to <see langword="decimal"/>, considering the token's <paramref name="decimals"/>.
     /// </remarks>
-    public ERC20DynamoDbTable(BigInteger chainId, EthereumAddress address, string name, string symbol, byte decimals, BigInteger totalSupply)
+    public ERC20DynamoDbTable(long chainId, EthereumAddress address, string name, string symbol, byte decimals, BigInteger totalSupply)
     {
         ChainId = chainId;
         Address = address;
@@ -113,7 +113,7 @@ public class ERC20DynamoDbTable
     /// <remarks>
     /// This constructor retrieves token details such as name, symbol, decimals, and total supply from the provided <see cref="IERC20Service"/>.
     /// </remarks>
-    public ERC20DynamoDbTable(BigInteger chainId, IERC20Service erc20Service)
+    public ERC20DynamoDbTable(long chainId, IERC20Service erc20Service)
     {
         ChainId = chainId;
         Address = erc20Service.ContractAddress;
@@ -123,4 +123,9 @@ public class ERC20DynamoDbTable
         TotalSupply = Nethereum.Web3.Web3.Convert.FromWei(erc20Service.TotalSupply(), Decimals);
         HashKey = $"{ChainId}-{Address}".ToSha256();
     }
+
+    /// <summary>
+    /// Constructor without parameters for working "Amazon.DynamoDBv2"
+    /// </summary>
+    public ERC20DynamoDbTable() { }
 }

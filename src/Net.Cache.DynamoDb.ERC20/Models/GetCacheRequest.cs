@@ -16,7 +16,7 @@ public class GetCacheRequest
     /// <summary>
     /// Gets the block-chain chain ID for the request.
     /// </summary>
-    public BigInteger ChainId { get; }
+    public long ChainId { get; }
 
     /// <summary>
     /// Gets the <see cref="IERC20Service"/> used to interact with the ERC20 token contract.
@@ -38,7 +38,7 @@ public class GetCacheRequest
     /// <remarks>
     /// This constructor creates an instance of the <see cref="ERC20Service"/> class using the provided RPC URL and contract address.
     /// </remarks>
-    public GetCacheRequest(BigInteger chainId, EthereumAddress contractAddress, string rpcUrl, bool updateTotalSupply = true)
+    public GetCacheRequest(long chainId, EthereumAddress contractAddress, string rpcUrl, bool updateTotalSupply = true)
         : this(chainId, new ERC20Service(rpcUrl, contractAddress), updateTotalSupply)
     { }
 
@@ -52,7 +52,7 @@ public class GetCacheRequest
     /// This constructor allows for more flexibility by accepting an instance of an <see cref="IERC20Service"/>,
     /// enabling the use of customized or mock services for testing purposes.
     /// </remarks>
-    public GetCacheRequest(BigInteger chainId, IERC20Service erc20Service, bool updateTotalSupply = true)
+    public GetCacheRequest(long chainId, IERC20Service erc20Service, bool updateTotalSupply = true)
     {
         ChainId = chainId;
         ERC20Service = erc20Service;
