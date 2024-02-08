@@ -74,6 +74,10 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
 
             return value != null;
         }
+        catch (AmazonDynamoDBException)
+        {
+            throw;
+        }
         catch
         {
             return false;
