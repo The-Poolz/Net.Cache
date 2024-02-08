@@ -7,7 +7,7 @@
     <PackageId>Net.Cache.DynamoDb</PackageId>
     <Title>Net.Cache.DynamoDb is a specialized extension of the Net.Cache library, providing an abstract base class for DynamoDB storage providers.</Title>
     <Description>Net.Cache.DynamoDb is a specialized extension of the Net.Cache library, providing an abstract base class for DynamoDB storage providers.</Description>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Authors>ArdenHide, Lomet</Authors>
     <Company>The-Poolz</Company>
     <Product>Net.Cache.DynamoDb</Product>
@@ -16,9 +16,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>Cache DynamoDb</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageReleaseNotes>- `DynamoDbStorageProvider` extended to be able to dynamically update the table name.
+    <PackageReleaseNotes>- Catch and throw AmazonDynamoDBException exception.
 
-Full changes can found here: https://github.com/The-Poolz/Net.Cache/releases/tag/v1.2.0</PackageReleaseNotes>
+		Full changes can found here: https://github.com/The-Poolz/Net.Cache/releases/tag/v1.2.1</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
