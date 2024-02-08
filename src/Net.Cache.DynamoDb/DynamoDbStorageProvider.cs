@@ -64,12 +64,10 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
         value = default;
         try
         {
-            var operationConfig = string.IsNullOrWhiteSpace(tableName)
-                ? null
-                : new DynamoDBOperationConfig
-                {
-                    OverrideTableName = tableName
-                };
+            var operationConfig = string.IsNullOrWhiteSpace(tableName) ? null : new DynamoDBOperationConfig
+            {
+                OverrideTableName = tableName
+            };
             value = Context.LoadAsync<TValue>(key, operationConfig)
                 .GetAwaiter()
                 .GetResult();
