@@ -38,7 +38,7 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
     /// <param name="existValue">The existing entry of ERC20 token information.</param>
     /// <param name="erc20Service">The ERC20 service to use for updating the total supply.</param>
     /// <returns>The updated ERC20 token information entry.</returns>
-    protected ERC20DynamoDbTable UpdateTotalSupply(ERC20DynamoDbTable existValue, IERC20Service erc20Service)
+    protected virtual ERC20DynamoDbTable UpdateTotalSupply(ERC20DynamoDbTable existValue, IERC20Service erc20Service)
     {
         var updatedValue = new ERC20DynamoDbTable(
             existValue.ChainId,
@@ -64,7 +64,7 @@ public class ERC20StorageProvider : DynamoDbStorageProvider<string, ERC20DynamoD
     /// <remarks>
     /// This method also updates the total supply of the token information if the <see cref="GetCacheRequest.UpdateTotalSupply"/> flag is set in the <paramref name="request"/>.
     /// </remarks>
-    public bool TryGetValue(string key, GetCacheRequest request, [MaybeNullWhen(false)] out ERC20DynamoDbTable value)
+    public virtual bool TryGetValue(string key, GetCacheRequest request, [MaybeNullWhen(false)] out ERC20DynamoDbTable value)
     {
         if (!base.TryGetValue(key, out value))
         {

@@ -53,13 +53,13 @@ public class DynamoDbStorageProvider<TKey, TValue> : IStorageProvider<TKey, TVal
     }
 
     /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Store(TKey, TValue)"/>
-    public void Store(TKey key, TValue value)
+    public virtual void Store(TKey key, TValue value)
     {
         Context.SaveAsync(value);
     }
 
     /// <inheritdoc cref="IStorageProvider{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
-    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
+    public virtual bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
         value = default;
         try
