@@ -40,7 +40,7 @@ public class ERC20CacheProvider
     /// If the entry exists, it is returned. Otherwise, a new entry is created using the provided
     /// details in the request and added to the cache.
     /// </remarks>
-    public ERC20DynamoDbTable GetOrAdd(string key, GetCacheRequest request)
+    public virtual ERC20DynamoDbTable GetOrAdd(string key, GetCacheRequest request)
     {
         if (storageProvider.TryGetValue(key, request, out var storedValue))
         {
