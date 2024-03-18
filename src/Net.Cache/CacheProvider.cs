@@ -47,6 +47,19 @@ namespace Net.Cache
         {
             return GetOrAddInternal(key, valueFactory, args);
         }
+        
+        /// <inheritdoc cref="ICacheProvider{TKey, TValue}.Get(TKey)"/>
+        public TValue Get(TKey key)
+        {
+            foreach (var provider in storageProviders)
+            {
+                if (provider.TryGetValue(key, out var value))
+                {
+                    return value;
+                }
+            }
+            throw new KeyNotFoundException($"The value associated with the key '{key}' was not found in any storage provider.");
+        }
 
         /// <summary>
         /// Internal method for handling the retrieval or addition of values in the cache.
