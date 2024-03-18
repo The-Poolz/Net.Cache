@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -16,24 +16,16 @@ namespace Net.Cache
     {
         protected readonly List<IStorageProvider<TKey, TValue>> storageProviders;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CacheProvider{TKey, TValue}"/> class using a collection of storage providers.
-        /// Each storage provider can be a different mechanism for storing and retrieving values.
-        /// </summary>
-        /// <param name="storageProviders">An enumeration of storage providers used for value storage and retrieval.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="storageProviders"/> argument is <see langword="null"/>.</exception>
-        public CacheProvider(IEnumerable<IStorageProvider<TKey, TValue>> storageProviders)
-            : this(storageProviders.ToArray())
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CacheProvider{TKey, TValue}"/> class using an array of storage providers.
-        /// This constructor is typically used when you have a fixed number of storage providers.
-        /// </summary>
-        /// <param name="storageProviders">An array of storage providers used for value storage and retrieval.</param>
-        public CacheProvider(params IStorageProvider<TKey, TValue>[] storageProviders)
+        /// <inheritdoc cref="ICacheProvider{TKey, TValue}.GetOrAdd(TKey, Func{TValue})"/>
+        public virtual TValue GetOrAdd(TKey key, Func<TValue> valueFactory)
         {
-            this.storageProviders = storageProviders.ToList();
+            return GetOrAddInternal(key, _ => valueFactory());
+        }
+
+        /// <inheritdoc cref="ICacheProvider{TKey, TValue}.GetOrAdd(TKey, Func{object[], TValue}, object[])"/>
+        public virtual TValue GetOrAdd(TKey key, Func<object[], TValue> valueFactory, params object[] args)
+        {
+            return GetOrAddInternal(key, valueFactory, args);
         }
 
         /// <summary>
