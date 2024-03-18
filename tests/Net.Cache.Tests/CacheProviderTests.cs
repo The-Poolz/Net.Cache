@@ -103,7 +103,7 @@ public class CacheProviderTests
                 cache.GetOrAdd(notExistKey, _ => "this value will not be added");
 
             existValueFromSecondaryProvider.Should().Be(expectedValue);
-            primaryProvider.storage[notExistKey].Should().Be(expectedValue);
+            primaryProvider.Storage[notExistKey].Should().Be(expectedValue);
         }
     }
 }

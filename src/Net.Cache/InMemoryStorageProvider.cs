@@ -27,9 +27,9 @@ namespace Net.Cache
         }
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Store(TKey, TValue)"/>
-        public void Store(TKey key, TValue value) => Cache.Add(key, value);
+        public virtual void Store(TKey key, TValue value) => Cache.Add(key, value);
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
-        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) => Cache.TryGetValue(key, out value);
+        public virtual bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) => Cache.TryGetValue(key, out value);
     }
 }

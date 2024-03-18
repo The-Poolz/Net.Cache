@@ -1,10 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace Net.Cache.Tests.Mock;
 
-namespace Net.Cache.Tests.Mock;
-
-internal class MockStorageProvider : IStorageProvider<string, string>
+internal class MockStorageProvider : InMemoryStorageProvider<string, string>
 {
-    public readonly IDictionary<string, string> storage;
+    public IDictionary<string, string> Storage => Cache;
     public static IDictionary<string, string> DefaultStorage => new Dictionary<string, string>
     {
         { "key 1", "value 1" },
@@ -13,22 +11,11 @@ internal class MockStorageProvider : IStorageProvider<string, string>
     };
 
     public MockStorageProvider()
-    {
-        storage = DefaultStorage;
-    }
+        : this(DefaultStorage)
+    { }
 
     public MockStorageProvider(IDictionary<string, string> storage)
     {
-        this.storage = storage;
-    }
-
-    public void Store(string key, string value)
-    {
-        storage.Add(key, value);
-    }
-
-    public bool TryGetValue(string key, [MaybeNullWhen(false)] out string value)
-    {
-        return storage.TryGetValue(key, out value);
+        storage.ToList().ForEach(item => Cache.Add(item.Key, item.Value));
     }
 }
