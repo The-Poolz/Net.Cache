@@ -1,49 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <Version>1.2.2</Version>
-    <PackageId>Net.Cache.DynamoDb.ERC20</PackageId>
-    <Authors>ArdenHide, Lomet</Authors>
-    <Company>The-Poolz</Company>
-    <Product>Net.Cache.DynamoDb.ERC20</Product>
-    <Title>A specialized extension of `Net.Cache.DynamoDb` package, for caching ERC20 token information in Amazon DynamoDB.</Title>
-    <Description>A specialized extension of `Net.Cache.DynamoDb` package, for caching ERC20 token information in Amazon DynamoDB.</Description>
-    <RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>- `UpdateTotalSupply` and `TryGetValue` methods are marked as virtual in the `ERC20StorageProvider` class.
-- `GetOrAdd` method is marked as virtual in the `ERC20CacheProvider` class.
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<Version>1.2.2</Version>
+		<PackageId>Net.Cache.DynamoDb.ERC20</PackageId>
+		<Authors>ArdenHide, Lomet</Authors>
+		<Company>The-Poolz</Company>
+		<Product>Net.Cache.DynamoDb.ERC20</Product>
+		<Title>A specialized extension of `Net.Cache.DynamoDb` package, for caching ERC20 token information in Amazon DynamoDB.</Title>
+		<Description>A specialized extension of `Net.Cache.DynamoDb` package, for caching ERC20 token information in Amazon DynamoDB.</Description>
+		<RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReleaseNotes>
+			- `UpdateTotalSupply` and `TryGetValue` methods are marked as virtual in the `ERC20StorageProvider` class.
+			- `GetOrAdd` method is marked as virtual in the `ERC20CacheProvider` class.
 
-		Full changes can found here: https://github.com/The-Poolz/Net.Cache/releases/tag/v1.2.2</PackageReleaseNotes>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageTags>Cache DynamoDb ERC20</PackageTags>
-  </PropertyGroup>
+			Full changes can found here: https://github.com/The-Poolz/Net.Cache/releases/tag/v1.2.2
+		</PackageReleaseNotes>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageTags>Cache DynamoDb ERC20</PackageTags>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Net.Cache.DynamoDb\Net.Cache.DynamoDb.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Net.Cryptography.SHA256" Version="1.1.0" />
+	  <PackageReference Include="Net.Web3.EthereumWallet" Version="1.1.0" />
+	  <PackageReference Include="Nethereum.Web3" Version="4.19.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Net.Cryptography.SHA256" Version="1.0.0" />
-    <PackageReference Include="Net.Web3.EthereumWallet" Version="1.0.0" />
-    <PackageReference Include="Nethereum.Web3" Version="4.18.0" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Net.Cache.DynamoDb\Net.Cache.DynamoDb.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

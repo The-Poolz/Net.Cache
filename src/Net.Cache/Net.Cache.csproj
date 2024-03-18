@@ -1,40 +1,41 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <PackageId>Net.Cache</PackageId>
-    <Title>Net.Cache is a C# library designed to provide efficient and easy-to-use caching solutions for .NET applications.</Title>
-    <Description>Net.Cache is a C# library designed to provide efficient and easy-to-use caching solutions for .NET applications.</Description>
-    <Version>1.1.0</Version>
-    <Authors>ArdenHide, Lomet</Authors>
-    <Company>The-Poolz</Company>
-    <Product>Net.Cache</Product>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>Cache</PackageTags>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageReleaseNotes>- CacheProvider working with collection of StorageProviders
-- CacheProvider receive valueFactory function as method parameter
-- Created InMemoryStorageProvider
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<PackageId>Net.Cache</PackageId>
+		<Title>Net.Cache is a C# library designed to provide efficient and easy-to-use caching solutions for .NET applications.</Title>
+		<Description>Net.Cache is a C# library designed to provide efficient and easy-to-use caching solutions for .NET applications.</Description>
+		<Version>1.1.0</Version>
+		<Authors>ArdenHide, Lomet</Authors>
+		<Company>The-Poolz</Company>
+		<Product>Net.Cache</Product>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTags>Cache</PackageTags>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReleaseNotes>
+			- CacheProvider working with collection of StorageProviders
+			- CacheProvider receive valueFactory function as method parameter
+			- Created InMemoryStorageProvider
 
-Full changes can found here: https://github.com/The-Poolz/Net.Cache/releases/tag/v1.1.0</PackageReleaseNotes>
-  </PropertyGroup>
+			Full changes can found here: https://github.com/The-Poolz/Net.Cache/releases/tag/v1.1.0
+		</PackageReleaseNotes>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>
