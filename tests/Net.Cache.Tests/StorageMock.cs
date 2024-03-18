@@ -6,7 +6,7 @@ namespace Net.Cache.Tests;
 public class StorageMock
 {
     private readonly Mock<IStorageProvider<string, string>> storageMock = new();
-    public string value = "testValue";
+    public static string value = "testValue";
     public CacheProvider<string, string> GetMockCacheProvider(bool returns)
     {
         storageMock.Setup(s => s.TryGetValue(It.IsAny<string>(), out value!)).Returns(returns);

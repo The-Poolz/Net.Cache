@@ -16,6 +16,32 @@ public class CacheProviderTests
         yield return new object[] { "duck", "Quack" };
     }
 
+    public class Get
+    {
+        [Fact]
+        internal void WhenKeyExists_ShouldReturnTheValue()
+        {
+            var storage = new StorageMock();
+            var cacheProvider = new CacheProvider<string, string>(storage.GetMockCache(key, true));
+
+            var actualValue = cacheProvider.Get(key);
+
+            actualValue.Should().Be(StorageMock.value);
+        }
+
+        [Fact]
+        internal void WhenKeyDoesNotExist_ShouldThrowKeyNotFoundException()
+        {
+            var storage = new StorageMock();
+            var cacheProvider = new CacheProvider<string, string>(storage.GetMockCache(key, false));
+
+            var testCode = () => cacheProvider.Get(key);
+
+            testCode.Should().Throw<KeyNotFoundException>()
+                .WithMessage($"The value associated with the key '{key}' was not found in any storage provider.");
+        }
+    }
+
     [Theory]
     [MemberData(nameof(AnimalSoundsTestData))]
     public void GetOrCache_AnimalSounds(string animal, string expectedSound)
