@@ -39,5 +39,8 @@ namespace Net.Cache
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
         public virtual bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) => Cache.TryGetValue(key, out value);
+
+        /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Remove(TKey)"/>
+        public void Remove(TKey key) => Cache.Remove(key);
     }
 }

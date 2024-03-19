@@ -83,6 +83,30 @@ public class CacheProviderTests
         }
     }
 
+    public class Delete
+    {
+        private static readonly MockStorageProvider storageProvider = new();
+        private readonly CacheProvider<string, string> cacheProvider = new(storageProvider);
+
+        [Fact]
+        internal void WhenKeyExists_ShouldRemoveItem()
+        {
+            var testCode = () => cacheProvider.Delete(existKey);
+
+            testCode.Should().NotThrow();
+            storageProvider.Storage.ContainsKey(existKey).Should().BeFalse();
+        }
+
+        [Fact]
+        internal void WhenKeyDoesNotExist_ShouldNothingHappened()
+        {
+            var testCode = () => cacheProvider.Delete(notExistKey);
+
+            testCode.Should().NotThrow();
+            storageProvider.Storage.ContainsKey(notExistKey).Should().BeFalse();
+        }
+    }
+
     public class GetOrAdd
     {
         private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
