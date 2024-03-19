@@ -116,7 +116,6 @@ public class CacheProviderTests
         [Fact]
         internal void WhenKeyExists_ShouldUpdateItem()
         {
-
             var testCode = () => cacheProvider.Update(existKey, newValue);
 
             testCode.Should().NotThrow();
