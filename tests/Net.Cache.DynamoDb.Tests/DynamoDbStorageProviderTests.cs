@@ -92,4 +92,15 @@ public class DynamoDbStorageProviderTests
 
         testCode.Should().Throw<AmazonDynamoDBException>();
     }
+
+    [Fact]
+    public void Delete_ShouldCallDeleteAsync()
+    {
+        const string key = "testKey";
+        var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
+
+        var testCode = () => provider.Remove(key);
+
+        testCode.Should().NotThrow();
+    }
 }
