@@ -74,9 +74,12 @@ public class CacheProviderTests
         [Fact]
         internal void WhenKeyDoesNotExist_ShouldItemHasBeenAdded()
         {
-            var testCode = () => cacheProvider.Add(notExistKey, "value 10");
+            const string expectedValue = "value 10";
+
+            var testCode = () => cacheProvider.Add(notExistKey, expectedValue);
 
             testCode.Should().NotThrow();
+            storageProvider.Storage[notExistKey].Should().Be(expectedValue);
         }
     }
 
