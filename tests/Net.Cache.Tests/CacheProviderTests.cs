@@ -107,6 +107,32 @@ public class CacheProviderTests
         }
     }
 
+    public class Update
+    {
+        private const string newValue = "new value 1";
+        private static readonly MockStorageProvider storageProvider = new();
+        private readonly CacheProvider<string, string> cacheProvider = new(storageProvider);
+
+        [Fact]
+        internal void WhenKeyExists_ShouldUpdateItem()
+        {
+
+            var testCode = () => cacheProvider.Update(existKey, newValue);
+
+            testCode.Should().NotThrow();
+            storageProvider.Storage[existKey].Should().Be(newValue);
+        }
+
+        [Fact]
+        internal void WhenKeyDoesNotExist_ShouldNothingHappened()
+        {
+            var testCode = () => cacheProvider.Update(notExistKey, newValue);
+
+            testCode.Should().NotThrow();
+            storageProvider.Storage.ContainsKey(notExistKey).Should().BeFalse();
+        }
+    }
+
     public class GetOrAdd
     {
         private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
