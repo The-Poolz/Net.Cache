@@ -39,5 +39,12 @@ namespace Net.Cache
         /// This method demonstrates an early exit strategy; it returns as soon as the value is found without iterating through the remaining storage providers.
         /// </remarks>
         public TValue Get(TKey key);
+
+        /// <summary>
+        /// Adds a specified value to the cache with the specified key.
+        /// </summary>
+        /// <param name="key">The key under which the value is stored.</param>
+        /// <param name="value">The value to be added to the cache.</param>
+        public void Add(TKey key, TValue value);
     }
 }

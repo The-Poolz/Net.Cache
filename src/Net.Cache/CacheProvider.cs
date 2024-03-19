@@ -61,6 +61,12 @@ namespace Net.Cache
             throw new KeyNotFoundException($"The value associated with the key '{key}' was not found in any storage provider.");
         }
 
+        /// <inheritdoc cref="ICacheProvider{TKey, TValue}.Add(TKey, TValue)"/>
+        public void Add(TKey key, TValue value)
+        {
+            storageProviders[0].Store(key, value);
+        }
+
         /// <summary>
         /// Internal method for handling the retrieval or addition of values in the cache.
         /// </summary>
