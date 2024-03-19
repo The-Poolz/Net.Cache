@@ -14,22 +14,30 @@ namespace Net.Cache
         where TKey : IEquatable<TKey>
         where TValue : notnull
     {
-        protected readonly Lazy<Dictionary<TKey, TValue>> lazyCache;
-        protected Dictionary<TKey, TValue> Cache => lazyCache.Value;
+        protected readonly Lazy<IDictionary<TKey, TValue>> lazyCache;
+        protected IDictionary<TKey, TValue> Cache => lazyCache.Value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InMemoryStorageProvider{TKey, TValue}"/> class.
-        /// Sets up lazy initialization for the internal dictionary that stores the key-value pairs.
         /// </summary>
         public InMemoryStorageProvider()
         {
-            lazyCache = new Lazy<Dictionary<TKey, TValue>>();
+            lazyCache = new Lazy<IDictionary<TKey, TValue>>(() => new Dictionary<TKey, TValue>());
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InMemoryStorageProvider{TKey, TValue}"/> class with initial values.
+        /// </summary>
+        /// <param name="initialValues">The dictionary containing the initial key-value pairs to be stored in memory.</param>
+        public InMemoryStorageProvider(IDictionary<TKey, TValue> initialValues)
+        {
+            lazyCache = new Lazy<IDictionary<TKey, TValue>>(() => initialValues);
         }
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Store(TKey, TValue)"/>
-        public void Store(TKey key, TValue value) => Cache.Add(key, value);
+        public virtual void Store(TKey key, TValue value) => Cache.Add(key, value);
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
-        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) => Cache.TryGetValue(key, out value);
+        public virtual bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) => Cache.TryGetValue(key, out value);
     }
 }
