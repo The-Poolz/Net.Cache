@@ -57,6 +57,29 @@ public class CacheProviderTests
         }
     }
 
+    public class Add
+    {
+        private static readonly MockStorageProvider storageProvider = new();
+        private readonly CacheProvider<string, string> cacheProvider = new(storageProvider);
+
+        [Fact]
+        internal void WhenKeyExists_ShouldThrowArgumentException()
+        {
+            var testCode = () => cacheProvider.Add(existKey, "value 1");
+
+            testCode.Should().Throw<ArgumentException>()
+                .WithMessage($"An item with the same key has already been added. Key: {existKey}");
+        }
+
+        [Fact]
+        internal void WhenKeyDoesNotExist_ShouldItemHasBeenAdded()
+        {
+            var testCode = () => cacheProvider.Add(notExistKey, "value 10");
+
+            testCode.Should().NotThrow();
+        }
+    }
+
     public class GetOrAdd
     {
         private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
