@@ -14,12 +14,11 @@ namespace Net.Cache
         where TValue : notnull
     {
         /// <summary>
-        /// Stores the given value with the specified key. If a value with the same key already exists, it replaces the existing value.
-        /// This method serves for both adding new key-value pairs.
+        /// Stores the given value with the specified key. This method serves for both adding new key-value pairs.
         /// </summary>
         /// <param name="key">The key under which the value will be stored, acting as a unique identifier.</param>
         /// <param name="value">The value to be stored.</param>
-        void Store(TKey key, TValue value);
+        public void Store(TKey key, TValue value);
 
         /// <summary>
         /// Attempts to retrieve the value associated with a specified key. If the key is found, the method returns <see langword="true"/>,
@@ -29,6 +28,13 @@ namespace Net.Cache
         /// <param name="value">When this method returns, contains the value associated with the specified key, if the key is found;
         /// otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param>
         /// <returns><see langword="true"/> if the value was found; otherwise, <see langword="false"/>.</returns>
-        bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value);
+        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value);
+
+        /// <summary>
+        /// Removes the value associated with the specified key from the storage. If the key does not exist, the operation is ignored.
+        /// This method allows for the removal of key-value pairs, ensuring that the storage does not retain entries that are no longer needed.
+        /// </summary>
+        /// <param name="key">The key of the value to be removed. This key acts as a unique identifier for the value in the storage.</param>
+        public void Remove(TKey key);
     }
 }
