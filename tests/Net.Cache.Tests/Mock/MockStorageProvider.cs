@@ -11,11 +11,6 @@ internal class MockStorageProvider : InMemoryStorageProvider<string, string>
     };
 
     public MockStorageProvider()
-        : this(DefaultStorage)
+        : base(DefaultStorage)
     { }
-
-    public MockStorageProvider(IDictionary<string, string> storage)
-    {
-        storage.ToList().ForEach(item => Cache.Add(item.Key, item.Value));
-    }
 }
