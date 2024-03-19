@@ -1,101 +1,109 @@
-using Moq;
 using Xunit;
 using FluentAssertions;
+using Net.Cache.Tests.Mock;
 
 namespace Net.Cache.Tests;
 
 public class CacheProviderTests
 {
-    private const string key = "testKey";
-    private readonly StorageMock storageMock = new();
-    public static IEnumerable<object[]> AnimalSoundsTestData()
+    private const string existKey = "key 1";
+    private const string notExistKey = "key 10";
+
+    public class Ctor
     {
-        yield return new object[] { "cat", "Meow" };
-        yield return new object[] { "dog", "Woof woof" };
-        yield return new object[] { "cow", "Moo" };
-        yield return new object[] { "duck", "Quack" };
+        [Fact]
+        internal void PassIEnumerable()
+        {
+            var storageProviders = new List<IStorageProvider<string, string>>()
+            {
+                new MockStorageProvider(),
+                new InMemoryStorageProvider<string, string>()
+            };
+            var cacheProvider = new CacheProvider<string, string>(storageProviders);
+
+            cacheProvider.Should().NotBeNull();
+        }
+
+        [Fact]
+        internal void PassParams()
+        {
+            var storageProvider = new MockStorageProvider();
+
+            var cacheProvider = new CacheProvider<string, string>(storageProvider);
+
+            cacheProvider.Should().NotBeNull();
+        }
     }
 
     public class Get
     {
+        private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
+
         [Fact]
         internal void WhenKeyExists_ShouldReturnTheValue()
         {
-            var storage = new StorageMock();
-            var cacheProvider = new CacheProvider<string, string>(storage.GetMockCache(key, true));
+            var actualValue = cacheProvider.Get(existKey);
 
-            var actualValue = cacheProvider.Get(key);
-
-            actualValue.Should().Be(StorageMock.value);
+            actualValue.Should().Be(MockStorageProvider.DefaultStorage[existKey]);
         }
 
         [Fact]
         internal void WhenKeyDoesNotExist_ShouldThrowKeyNotFoundException()
         {
-            var storage = new StorageMock();
-            var cacheProvider = new CacheProvider<string, string>(storage.GetMockCache(key, false));
-
-            var testCode = () => cacheProvider.Get(key);
+            var testCode = () => cacheProvider.Get(notExistKey);
 
             testCode.Should().Throw<KeyNotFoundException>()
-                .WithMessage($"The value associated with the key '{key}' was not found in any storage provider.");
+                .WithMessage($"The value associated with the key '{notExistKey}' was not found in any storage provider.");
         }
     }
 
-    [Theory]
-    [MemberData(nameof(AnimalSoundsTestData))]
-    public void GetOrCache_AnimalSounds(string animal, string expectedSound)
+    public class GetOrAdd
     {
-        var storageProvider = new InMemoryStorageProvider<string, string>();
-        var cacheProvider = new CacheProvider<string, string>(storageProvider);
+        private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
 
-        var actualSound = cacheProvider.GetOrAdd(animal, () => expectedSound);
-        actualSound.Should().Be(expectedSound);
-
-        var existingSound = cacheProvider.GetOrAdd(animal, () => throw new InvalidOperationException("method should return initial description"));
-        existingSound.Should().Be(expectedSound);
-    }
-
-    public static IEnumerable<object[]> GetOrAddTestData()
-    {
-        // Test case: GetOrAdd_WithParameterlessFactory_CachesValue
-        yield return new object[] { true, Times.Never(), new Func<string>(() => "newValue"), null! };
-
-        // Test case: GetOrAdd_StoresValueInPrimaryStorage
-        yield return new object[] { false, Times.Once(), new Func<string>(() => "testValue"), null! };
-
-        // Test case: GetOrAdd_WithFactoryAndParameters_CachesValue
-        yield return new object[] { false, Times.Once(), new Func<object[], string>(args => (string)args[0]), new object[] { "testValue" } };
-    }
-
-    [Theory]
-    [MemberData(nameof(GetOrAddTestData))]
-    public void GetOrAdd_CombinedTheory(
-        bool returns,
-        Times timesExpectedStoreCalled,
-        Delegate factory,
-        object[] factoryArgs)
-    {
-        var cacheProvider = storageMock.GetMockCacheProvider(returns);
-        var result = factory switch
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        internal void WhenKeyExist_ShouldReturnExistValue(bool useParameterlessFunc)
         {
-            Func<string> parameterlessFactory => cacheProvider.GetOrAdd(key, parameterlessFactory),
-            Func<object[], string> parameterizedFactory => cacheProvider.GetOrAdd(key, parameterizedFactory, factoryArgs),
-            _ => throw new InvalidOperationException("Invalid factory delegate type.")
-        };
+            var existValue = useParameterlessFunc ?
+                cacheProvider.GetOrAdd(existKey, () => "this value will not be added") :
+                cacheProvider.GetOrAdd(existKey, _ => "this value will not be added");
 
-        storageMock.Verify(result, timesExpectedStoreCalled);
-    }
+            existValue.Should().Be(MockStorageProvider.DefaultStorage[existKey]);
+        }
 
-    [Fact]
-    public void GetOrAdd_RetrievesValueFromSecondaryStorage()
-    {
-        var primaryStorageMock = new StorageMock();
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        internal void WhenKeyDoesNotExist_ShouldAddValue(bool useParameterlessFunc)
+        {
+            const string expectedValue = "value 10";
 
-        var cacheProvider = new CacheProvider<string, string>(primaryStorageMock.GetMockCache(key, false), storageMock.GetMockCache(key, true));
-        var result = cacheProvider.GetOrAdd(key, () => "newValue");
+            var addedValue = useParameterlessFunc ?
+                cacheProvider.GetOrAdd(notExistKey, () => expectedValue) :
+                cacheProvider.GetOrAdd(notExistKey, _ => expectedValue);
 
-        storageMock.Verify(result, Times.Never());
-        primaryStorageMock.Verify(Times.Once());
+            addedValue.Should().Be(expectedValue);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        internal void WhenKeyNotExistInPrimaryStorageProvider_ShouldReturnExistValueFromSecondaryProvider_ShouldAddedValueToPrimaryProvider(bool useParameterlessFunc)
+        {
+            const string expectedValue = "value 10";
+            var primaryProvider = new MockStorageProvider();
+            var secondaryProvider = new InMemoryStorageProvider<string, string>();
+            secondaryProvider.Store(notExistKey, expectedValue);
+            var cache = new CacheProvider<string, string>(primaryProvider, secondaryProvider);
+
+            var existValueFromSecondaryProvider = useParameterlessFunc ?
+                cache.GetOrAdd(notExistKey, () => "this value will not be added") :
+                cache.GetOrAdd(notExistKey, _ => "this value will not be added");
+
+            existValueFromSecondaryProvider.Should().Be(expectedValue);
+            primaryProvider.Storage[notExistKey].Should().Be(expectedValue);
+        }
     }
 }
