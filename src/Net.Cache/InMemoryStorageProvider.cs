@@ -34,7 +34,6 @@ namespace Net.Cache
             lazyCache = new Lazy<IDictionary<TKey, TValue>>(() => initialValues);
         }
 
-
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Store(TKey, TValue)"/>
         public virtual void Store(TKey key, TValue value) => Cache.Add(key, value);
 
