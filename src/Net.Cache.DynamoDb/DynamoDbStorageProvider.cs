@@ -88,9 +88,18 @@ namespace Net.Cache.DynamoDb
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Remove(TKey)"/>
         public void Remove(TKey key)
         {
-            Context.DeleteAsync(key)
-                .GetAwaiter()
-                .GetResult();
+            Context.DeleteAsync(key);
+        }
+
+        /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Update(TKey, TValue)"/>
+        public void Update(TKey key, TValue value)
+        {
+            var operationConfig = string.IsNullOrWhiteSpace(tableName) ? null : new DynamoDBOperationConfig
+            {
+                OverrideTableName = tableName
+            };
+
+            Context.SaveAsync(value, operationConfig);
         }
     }
 }

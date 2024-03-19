@@ -103,4 +103,15 @@ public class DynamoDbStorageProviderTests
 
         testCode.Should().NotThrow();
     }
+
+    [Fact]
+    public void Update_ShouldCallUpdateAsync()
+    {
+        const string key = "testKey";
+        var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
+
+        var testCode = () => provider.Update(key, new object());
+
+        testCode.Should().NotThrow();
+    }
 }

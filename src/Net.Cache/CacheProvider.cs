@@ -67,6 +67,9 @@ namespace Net.Cache
         /// <inheritdoc cref="ICacheProvider{TKey, TValue}.Delete(TKey)"/>
         public void Delete(TKey key) => storageProviders.ForEach(provider => provider.Remove(key));
 
+        /// <inheritdoc cref="ICacheProvider{TKey, TValue}.Update(TKey, TValue)"/>
+        public void Update(TKey key, TValue value) => storageProviders.ForEach(provider => provider.Update(key, value));
+
         /// <summary>
         /// Internal method for handling the retrieval or addition of values in the cache.
         /// </summary>

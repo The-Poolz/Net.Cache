@@ -42,5 +42,14 @@ namespace Net.Cache
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Remove(TKey)"/>
         public void Remove(TKey key) => Cache.Remove(key);
+
+        /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Update(TKey, TValue)"/>
+        public void Update(TKey key, TValue value)
+        {
+            if (Cache.ContainsKey(key))
+            {
+                Cache[key] = value;
+            }
+        }
     }
 }
