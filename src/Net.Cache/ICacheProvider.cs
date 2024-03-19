@@ -53,5 +53,13 @@ namespace Net.Cache
         /// </summary>
         /// <param name="key">The key of the value to be removed from the cache. This key acts as a unique identifier for the cache entry.</param>
         public void Delete(TKey key);
+
+        /// <summary>
+        /// Updates the value associated with the specified key in the cache.
+        /// If the key exists, its corresponding value is updated. If the key does not exist, no action is taken.
+        /// </summary>
+        /// <param name="key">The key under which the value is stored. This key acts as a unique identifier for the cache entry.</param>
+        /// <param name="value">The new value to be associated with the specified key in the cache, if the key exists.</param>
+        public void Update(TKey key, TValue value);
     }
 }

@@ -36,5 +36,13 @@ namespace Net.Cache
         /// </summary>
         /// <param name="key">The key of the value to be removed. This key acts as a unique identifier for the value in the storage.</param>
         public void Remove(TKey key);
+
+        /// <summary>
+        /// Updates the value associated with the specified key in the storage.
+        /// If the key exists, its corresponding value is updated. If the key does not exist, no action is taken.
+        /// </summary>
+        /// <param name="key">The key under which the value is stored. This key acts as a unique identifier for the value in the storage.</param>
+        /// <param name="value">The new value to be associated with the specified key in the storage, if the key exists.</param>
+        public void Update(TKey key, TValue value);
     }
 }
