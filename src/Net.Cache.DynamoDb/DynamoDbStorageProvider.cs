@@ -56,7 +56,9 @@ namespace Net.Cache.DynamoDb
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Store(TKey, TValue)"/>
         public virtual void Store(TKey key, TValue value)
         {
-            Context.SaveAsync(value);
+            Context.SaveAsync(value)
+                .GetAwaiter()
+                .GetResult();
         }
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
@@ -65,11 +67,7 @@ namespace Net.Cache.DynamoDb
             value = default;
             try
             {
-                var operationConfig = string.IsNullOrWhiteSpace(tableName) ? null : new DynamoDBOperationConfig
-                {
-                    OverrideTableName = tableName
-                };
-                value = Context.LoadAsync<TValue>(key, operationConfig)
+                value = Context.LoadAsync<TValue>(key, OperationConfig())
                     .GetAwaiter()
                     .GetResult();
 
@@ -86,20 +84,23 @@ namespace Net.Cache.DynamoDb
         }
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Remove(TKey)"/>
-        public void Remove(TKey key)
-        {
-            Context.DeleteAsync(key);
-        }
+        public void Remove(TKey key) => Context.DeleteAsync(key)
+            .GetAwaiter()
+            .GetResult();
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Update(TKey, TValue)"/>
-        public void Update(TKey key, TValue value)
-        {
-            var operationConfig = string.IsNullOrWhiteSpace(tableName) ? null : new DynamoDBOperationConfig
-            {
-                OverrideTableName = tableName
-            };
+        public void Update(TKey key, TValue value) => Context.SaveAsync(value, OperationConfig())
+            .GetAwaiter()
+            .GetResult();
 
-            Context.SaveAsync(value, operationConfig);
-        }
+        /// <inheritdoc cref="IStorageProvider{TKey, TValue}.ContainsKey(TKey)"/>
+        public bool ContainsKey(TKey key) => Context.LoadAsync<TValue>(key, OperationConfig())
+                .GetAwaiter()
+                .GetResult() != null;
+
+        protected DynamoDBOperationConfig? OperationConfig() => string.IsNullOrWhiteSpace(tableName) ? null : new DynamoDBOperationConfig
+        {
+            OverrideTableName = tableName
+        };
     }
 }

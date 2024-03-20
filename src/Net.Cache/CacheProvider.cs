@@ -92,6 +92,9 @@ namespace Net.Cache
         /// <inheritdoc cref="ICacheProvider{TKey, TValue}.Update(TKey, TValue)"/>
         public void Update(TKey key, TValue value) => storageProviders.ForEach(provider => provider.Update(key, value));
 
+        /// <inheritdoc cref="ICacheProvider{TKey, TValue}.ContainsKey(TKey)"/>
+        public bool ContainsKey(TKey key) => storageProviders.Exists(provider => provider.ContainsKey(key));
+
         /// <summary>
         /// Internal method for handling the retrieval or addition of values in the cache.
         /// </summary>

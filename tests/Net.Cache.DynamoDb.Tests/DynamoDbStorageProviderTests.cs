@@ -114,4 +114,28 @@ public class DynamoDbStorageProviderTests
 
         testCode.Should().NotThrow();
     }
+
+    [Fact]
+    internal void WhenKeyExists_ShouldReturnTrue()
+    {
+        const string key = "testKey";
+        mockContext.Setup(x => x.LoadAsync<object>(key, It.IsAny<DynamoDBOperationConfig>(), default))
+            .ReturnsAsync(string.Empty);
+        var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
+
+        var isExist = provider.ContainsKey(key);
+
+        isExist.Should().BeTrue();
+    }
+
+    [Fact]
+    internal void WhenKeyDoesNotExist_ShouldReturnFalse()
+    {
+        const string key = "testKey";
+        var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
+
+        var isExist = provider.ContainsKey(key);
+
+        isExist.Should().BeFalse();
+    }
 }

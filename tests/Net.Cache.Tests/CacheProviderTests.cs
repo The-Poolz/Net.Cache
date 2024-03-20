@@ -239,4 +239,25 @@ public class CacheProviderTests
             primaryProvider.Storage[notExistKey].Should().Be(expectedValue);
         }
     }
+
+    public class ContainsKey
+    {
+        private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
+
+        [Fact]
+        internal void WhenKeyExists_ShouldReturnTrue()
+        {
+            var isExist = cacheProvider.ContainsKey(existKey);
+
+            isExist.Should().BeTrue();
+        }
+
+        [Fact]
+        internal void WhenKeyDoesNotExist_ShouldReturnFalse()
+        {
+            var isExist = cacheProvider.ContainsKey(notExistKey);
+
+            isExist.Should().BeFalse();
+        }
+    }
 }
