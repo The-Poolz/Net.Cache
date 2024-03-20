@@ -41,6 +41,17 @@ namespace Net.Cache
         public TValue Get(TKey key);
 
         /// <summary>
+        /// Attempts to retrieve the value associated with the specified key from the cache without throwing an exception if the key is not found.
+        /// </summary>
+        /// <param name="key">The key of the value to retrieve.</param>
+        /// <param name="value">When this method returns, contains the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param>
+        /// <returns>true if the cache contains an element with the specified key; otherwise, false.</returns>
+        /// <remarks>
+        /// This method provides a way to retrieve values from the cache without the risk of throwing an exception if the key does not exist. It is particularly useful in scenarios where it is acceptable for the value to be missing, or where the presence of a value needs to be checked without causing an exception if it is not found.
+        /// </remarks>
+        public bool TryGet(TKey key, out TValue value);
+
+        /// <summary>
         /// Adds a specified value to the cache with the specified key.
         /// </summary>
         /// <param name="key">The key under which the value is stored.</param>

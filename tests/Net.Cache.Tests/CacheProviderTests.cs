@@ -1,3 +1,4 @@
+using Moq;
 using Xunit;
 using FluentAssertions;
 using Net.Cache.Tests.Mock;
@@ -7,6 +8,7 @@ namespace Net.Cache.Tests;
 public class CacheProviderTests
 {
     private const string existKey = "key 1";
+    private const string existValue = "value 1";
     private const string notExistKey = "key 10";
 
     public class Ctor
@@ -57,10 +59,54 @@ public class CacheProviderTests
         }
     }
 
+    public class TryGet
+    {
+        private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
+
+        [Fact]
+        internal void WhenKeyExists_ShouldReturnTrueAndExpectedValue()
+        {
+            var isExist = cacheProvider.TryGet(existKey, out var value);
+
+            isExist.Should().BeTrue();
+            value.Should().NotBeNull();
+            value.Should().Be(existValue);
+        }
+
+        [Fact]
+        internal void WhenKeyDoesNotExist_ShouldReturnFalseAndNullValue()
+        {
+            var isExist = cacheProvider.TryGet(notExistKey, out var value);
+
+            isExist.Should().BeFalse();
+            value.Should().BeNull();
+        }
+
+        [Fact]
+        internal void WhenExceptionThrown_ShouldReturnFalseAndNullValue()
+        {
+            var provider = new Mock<IStorageProvider<string, string>>();
+            var value = string.Empty;
+            provider.Setup(x => x.TryGetValue(notExistKey, out value))
+                .Throws<Exception>();
+            var cache = new CacheProvider<string, string>(provider.Object);
+            var isExist = cache.TryGet(notExistKey, out value);
+
+            isExist.Should().BeFalse();
+            value.Should().Be(string.Empty);
+        }
+    }
+
     public class Add
     {
-        private static readonly MockStorageProvider storageProvider = new();
-        private readonly CacheProvider<string, string> cacheProvider = new(storageProvider);
+        private readonly MockStorageProvider storageProvider;
+        private readonly CacheProvider<string, string> cacheProvider;
+
+        public Add()
+        {
+            storageProvider = new MockStorageProvider();
+            cacheProvider = new CacheProvider<string, string>(storageProvider);
+        }
 
         [Fact]
         internal void WhenKeyExists_ShouldThrowArgumentException()
@@ -85,8 +131,14 @@ public class CacheProviderTests
 
     public class Delete
     {
-        private static readonly MockStorageProvider storageProvider = new();
-        private readonly CacheProvider<string, string> cacheProvider = new(storageProvider);
+        private readonly MockStorageProvider storageProvider;
+        private readonly CacheProvider<string, string> cacheProvider;
+
+        public Delete()
+        {
+            storageProvider = new MockStorageProvider();
+            cacheProvider = new CacheProvider<string, string>(storageProvider);
+        }
 
         [Fact]
         internal void WhenKeyExists_ShouldRemoveItem()
@@ -110,8 +162,14 @@ public class CacheProviderTests
     public class Update
     {
         private const string newValue = "new value 1";
-        private static readonly MockStorageProvider storageProvider = new();
-        private readonly CacheProvider<string, string> cacheProvider = new(storageProvider);
+        private readonly MockStorageProvider storageProvider;
+        private readonly CacheProvider<string, string> cacheProvider;
+
+        public Update()
+        {
+            storageProvider = new MockStorageProvider();
+            cacheProvider = new CacheProvider<string, string>(storageProvider);
+        }
 
         [Fact]
         internal void WhenKeyExists_ShouldUpdateItem()
