@@ -99,8 +99,14 @@ public class CacheProviderTests
 
     public class Add
     {
-        private static readonly MockStorageProvider storageProvider = new();
-        private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
+        private readonly MockStorageProvider storageProvider;
+        private readonly CacheProvider<string, string> cacheProvider;
+
+        public Add()
+        {
+            storageProvider = new MockStorageProvider();
+            cacheProvider = new CacheProvider<string, string>(storageProvider);
+        }
 
         [Fact]
         internal void WhenKeyExists_ShouldThrowArgumentException()
@@ -125,8 +131,14 @@ public class CacheProviderTests
 
     public class Delete
     {
-        private static readonly MockStorageProvider storageProvider = new();
-        private readonly CacheProvider<string, string> cacheProvider = new(storageProvider);
+        private readonly MockStorageProvider storageProvider;
+        private readonly CacheProvider<string, string> cacheProvider;
+
+        public Delete()
+        {
+            storageProvider = new MockStorageProvider();
+            cacheProvider = new CacheProvider<string, string>(storageProvider);
+        }
 
         [Fact]
         internal void WhenKeyExists_ShouldRemoveItem()
@@ -150,8 +162,14 @@ public class CacheProviderTests
     public class Update
     {
         private const string newValue = "new value 1";
-        private static readonly MockStorageProvider storageProvider = new();
-        private readonly CacheProvider<string, string> cacheProvider = new(storageProvider);
+        private readonly MockStorageProvider storageProvider;
+        private readonly CacheProvider<string, string> cacheProvider;
+
+        public Update()
+        {
+            storageProvider = new MockStorageProvider();
+            cacheProvider = new CacheProvider<string, string>(storageProvider);
+        }
 
         [Fact]
         internal void WhenKeyExists_ShouldUpdateItem()
