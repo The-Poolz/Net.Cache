@@ -51,5 +51,8 @@ namespace Net.Cache
                 Cache[key] = value;
             }
         }
+
+        /// <inheritdoc cref="IStorageProvider{TKey, TValue}.ContainsKey(TKey)"/>
+        public bool ContainsKey(TKey key) => Cache.ContainsKey(key);
     }
 }

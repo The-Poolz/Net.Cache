@@ -72,5 +72,12 @@ namespace Net.Cache
         /// <param name="key">The key under which the value is stored. This key acts as a unique identifier for the cache entry.</param>
         /// <param name="value">The new value to be associated with the specified key in the cache, if the key exists.</param>
         public void Update(TKey key, TValue value);
+
+        /// <summary>
+        /// Checks whether the cache contains an entry with the specified key.
+        /// </summary>
+        /// <param name="key">The key to check for presence in the cache.</param>
+        /// <returns><see langword="true"/> if the cache contains an entry with the specified key; otherwise, <see langword="false"/>.</returns>
+        public bool ContainsKey(TKey key);
     }
 }
