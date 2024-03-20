@@ -83,7 +83,7 @@ public class CacheProviderTests
         }
 
         [Fact]
-        internal void WhenKeyDoesNotExist_ShouldThrowException()
+        internal void WhenExceptionThrown_ShouldReturnFalseAndNullValue()
         {
             var provider = new Mock<IStorageProvider<string, string>>();
             var value = string.Empty;
