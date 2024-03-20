@@ -61,6 +61,28 @@ namespace Net.Cache
             throw new KeyNotFoundException($"The value associated with the key '{key}' was not found in any storage provider.");
         }
 
+        /// <inheritdoc cref="ICacheProvider{TKey, TValue}.TryGet(TKey, out TValue)"/>
+        public bool TryGet(TKey key, out TValue value)
+        {
+            value = default!;
+            try
+            {
+                foreach (var provider in storageProviders)
+                {
+                    if (provider.TryGetValue(key, out value!))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return false;
+        }
+
         /// <inheritdoc cref="ICacheProvider{TKey, TValue}.Add(TKey, TValue)"/>
         public void Add(TKey key, TValue value) => storageProviders[0].Store(key, value);
 
