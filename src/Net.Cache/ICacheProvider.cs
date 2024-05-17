@@ -8,7 +8,6 @@ namespace Net.Cache
         where TKey : IEquatable<TKey>
         where TValue : notnull
     {
-
         /// <summary>
         /// Retrieves a value by key, or adds it to the cache using a task if it's not already present.
         /// This method is useful when the creation of the value does not require any parameters.
