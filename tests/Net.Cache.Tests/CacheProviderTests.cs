@@ -194,36 +194,54 @@ public class CacheProviderTests
     {
         private readonly CacheProvider<string, string> cacheProvider = new(new MockStorageProvider());
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        internal void WhenKeyExist_ShouldReturnExistValue(bool useParameterlessFunc)
+        public enum FunctionType
         {
-            var existValue = useParameterlessFunc ?
-                cacheProvider.GetOrAdd(existKey, () => "this value will not be added") :
-                cacheProvider.GetOrAdd(existKey, _ => "this value will not be added");
+            WithParameters,
+            Parameterless,
+            TaskValue
+        }
+
+        [Theory]
+        [InlineData(FunctionType.WithParameters)]
+        [InlineData(FunctionType.Parameterless)]
+        [InlineData(FunctionType.TaskValue)]
+        internal void WhenKeyExist_ShouldReturnExistValue(FunctionType funcType)
+        {
+            var existValue = funcType switch
+            {
+                FunctionType.WithParameters => cacheProvider.GetOrAdd(existKey, _ => "this value will not be added"),
+                FunctionType.Parameterless => cacheProvider.GetOrAdd(existKey, () => "this value will not be added"),
+                FunctionType.TaskValue => cacheProvider.GetOrAdd(existKey, Task.FromResult("this value will not be added")),
+                _ => string.Empty
+            };
 
             existValue.Should().Be(MockStorageProvider.DefaultStorage[existKey]);
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        internal void WhenKeyDoesNotExist_ShouldAddValue(bool useParameterlessFunc)
+        [InlineData(FunctionType.WithParameters)]
+        [InlineData(FunctionType.Parameterless)]
+        [InlineData(FunctionType.TaskValue)]
+        internal void WhenKeyDoesNotExist_ShouldAddValue(FunctionType funcType)
         {
             const string expectedValue = "value 10";
 
-            var addedValue = useParameterlessFunc ?
-                cacheProvider.GetOrAdd(notExistKey, () => expectedValue) :
-                cacheProvider.GetOrAdd(notExistKey, _ => expectedValue);
+            var addedValue = funcType switch
+            {
+                FunctionType.WithParameters => cacheProvider.GetOrAdd(notExistKey, _ => expectedValue),
+                FunctionType.Parameterless => cacheProvider.GetOrAdd(notExistKey, () => expectedValue),
+                FunctionType.TaskValue => cacheProvider.GetOrAdd(notExistKey, Task.FromResult(expectedValue)),
+                _ => string.Empty
+            };
 
             addedValue.Should().Be(expectedValue);
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        internal void WhenKeyNotExistInPrimaryStorageProvider_ShouldReturnExistValueFromSecondaryProvider_ShouldAddedValueToPrimaryProvider(bool useParameterlessFunc)
+        [InlineData(FunctionType.WithParameters)]
+        [InlineData(FunctionType.Parameterless)]
+        [InlineData(FunctionType.TaskValue)]
+        internal void WhenKeyNotExistInPrimaryStorageProvider_ShouldReturnExistValueFromSecondaryProvider_ShouldAddedValueToPrimaryProvider(FunctionType funcType)
         {
             const string expectedValue = "value 10";
             var primaryProvider = new MockStorageProvider();
@@ -231,9 +249,13 @@ public class CacheProviderTests
             secondaryProvider.Store(notExistKey, expectedValue);
             var cache = new CacheProvider<string, string>(primaryProvider, secondaryProvider);
 
-            var existValueFromSecondaryProvider = useParameterlessFunc ?
-                cache.GetOrAdd(notExistKey, () => "this value will not be added") :
-                cache.GetOrAdd(notExistKey, _ => "this value will not be added");
+            var existValueFromSecondaryProvider = funcType switch
+            {
+                FunctionType.WithParameters => cache.GetOrAdd(notExistKey, _ => "this value will not be added"),
+                FunctionType.Parameterless => cache.GetOrAdd(notExistKey, () => "this value will not be added"),
+                FunctionType.TaskValue => cache.GetOrAdd(notExistKey, Task.FromResult("this value will not be added")),
+                _ => string.Empty
+            };
 
             existValueFromSecondaryProvider.Should().Be(expectedValue);
             primaryProvider.Storage[notExistKey].Should().Be(expectedValue);
