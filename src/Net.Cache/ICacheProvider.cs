@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace Net.Cache
@@ -7,6 +8,15 @@ namespace Net.Cache
         where TKey : IEquatable<TKey>
         where TValue : notnull
     {
+        /// <summary>
+        /// Retrieves a value by key, or adds it to the cache using a task if it's not already present.
+        /// This method is useful when the creation of the value does not require any parameters.
+        /// </summary>
+        /// <param name="key">The key for retrieving or adding the value.</param>
+        /// <param name="value">A task that creates a value when required.</param>
+        /// <returns>The cached or newly added value associated with the specified <paramref name="key"/>.</returns>
+        public TValue GetOrAdd(TKey key, Task<TValue> value);
+
         /// <summary>
         /// Retrieves a value by key, or adds it to the cache using a parameter-less factory function if it's not already present.
         /// This method is useful when the creation of the value does not require any parameters.

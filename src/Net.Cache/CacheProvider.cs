@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Net.Cache
 {
@@ -34,6 +35,12 @@ namespace Net.Cache
         public CacheProvider(params IStorageProvider<TKey, TValue>[] storageProviders)
         {
             this.storageProviders = storageProviders.ToList();
+        }
+
+        /// <inheritdoc cref="ICacheProvider{TKey, TValue}.GetOrAdd(TKey, Task{TValue})"/>
+        public virtual TValue GetOrAdd(TKey key, Task<TValue> value)
+        {
+            return GetOrAddInternal(key, _ => value.GetAwaiter().GetResult());
         }
 
         /// <inheritdoc cref="ICacheProvider{TKey, TValue}.GetOrAdd(TKey, Func{TValue})"/>
