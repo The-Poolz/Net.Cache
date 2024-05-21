@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Net.Cache
+namespace Net.Cache 
 {
     /// <summary>
     /// Manages caching of values identified by keys. This class allows for storing and retrieving values efficiently and 
