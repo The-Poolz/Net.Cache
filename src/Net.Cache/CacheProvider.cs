@@ -27,6 +27,11 @@ namespace Net.Cache
             : this(storageProviders.ToArray())
         { }
 
+        public void MethodWhichNotTested()
+        {
+            throw new NotImplementedException();
+        }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheProvider{TKey, TValue}"/> class using an array of storage providers.
         /// This constructor is typically used when you have a fixed number of storage providers.
