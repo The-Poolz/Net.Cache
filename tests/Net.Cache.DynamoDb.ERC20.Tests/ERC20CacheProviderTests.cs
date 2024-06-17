@@ -32,8 +32,8 @@ public class ERC20CacheProviderTests
         var erc20StorageProvider = new ERC20StorageProvider(MockContext(true));
         var erc20CacheProvider = new ERC20CacheProvider(erc20StorageProvider);
 
-        var addedItem = erc20CacheProvider.GetOrAdd(key, new GetCacheRequest(chainId, mockErc20Service));
-        var updatedItem = erc20CacheProvider.GetOrAdd(key, new GetCacheRequest(chainId, mockErc20Service));
+        var addedItem = erc20CacheProvider.GetOrAdd(new GetCacheRequest(chainId, mockErc20Service));
+        var updatedItem = erc20CacheProvider.GetOrAdd(new GetCacheRequest(chainId, mockErc20Service));
 
         addedItem.Should().BeEquivalentTo(new ERC20DynamoDbTable(
             chainId, contractAddress, name, symbol, decimals, 0.0000000000055m
@@ -49,7 +49,7 @@ public class ERC20CacheProviderTests
         var erc20StorageProvider = new ERC20StorageProvider(MockContext(false));
         var erc20CacheProvider = new ERC20CacheProvider(erc20StorageProvider);
 
-        var addedItem = erc20CacheProvider.GetOrAdd(key, new GetCacheRequest(chainId, mockErc20Service));
+        var addedItem = erc20CacheProvider.GetOrAdd(new GetCacheRequest(chainId, mockErc20Service));
 
         addedItem.Should().BeEquivalentTo(new ERC20DynamoDbTable(
             chainId, contractAddress, name, symbol, decimals, 0.0000000000055m
