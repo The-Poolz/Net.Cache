@@ -1,4 +1,5 @@
-﻿using Net.Cache.DynamoDb.ERC20.Models;
+﻿using Net.Cryptography.SHA256;
+using Net.Cache.DynamoDb.ERC20.Models;
 
 namespace Net.Cache.DynamoDb.ERC20
 {
@@ -40,9 +41,9 @@ namespace Net.Cache.DynamoDb.ERC20
         /// If the entry exists, it is returned. Otherwise, a new entry is created using the provided
         /// details in the request and added to the cache.
         /// </remarks>
-        public virtual ERC20DynamoDbTable GetOrAdd(string key, GetCacheRequest request)
+        public virtual ERC20DynamoDbTable GetOrAdd(GetCacheRequest request)
         {
-            if (storageProvider.TryGetValue(key, request, out var storedValue))
+            if (storageProvider.TryGetValue($"{request.ChainId}-{request.ERC20Service.ContractAddress}".ToSha256(), request, out var storedValue))
             {
                 return storedValue;
             }
