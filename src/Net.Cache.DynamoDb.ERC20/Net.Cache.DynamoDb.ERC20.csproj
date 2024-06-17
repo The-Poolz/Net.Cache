@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
-		<Version>1.3.0</Version>
+		<Version>v1.3.3</Version>
 		<PackageId>Net.Cache.DynamoDb.ERC20</PackageId>
 		<Authors>ArdenHide, Lomet</Authors>
 		<Company>The-Poolz</Company>
@@ -12,7 +12,7 @@
 		<Description>A specialized extension of `Net.Cache.DynamoDb` package, for caching ERC20 token information in Amazon DynamoDB.</Description>
 		<RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>https://github.com/The-Poolz/Net.Cache/releases/tag/v1.3.0</PackageReleaseNotes>
+		<PackageReleaseNotes>https://github.com/The-Poolz/Net.Cache/releases/tag/v1.3.3</PackageReleaseNotes>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageTags>Cache DynamoDb ERC20</PackageTags>
