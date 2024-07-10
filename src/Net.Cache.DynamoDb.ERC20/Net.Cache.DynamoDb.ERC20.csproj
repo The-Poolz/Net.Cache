@@ -1,31 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+	<Import Project="..\..\buildConf\.props" />
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
-		<Nullable>enable</Nullable>
-		<Version>1.3.3</Version>
 		<PackageId>Net.Cache.DynamoDb.ERC20</PackageId>
-		<Authors>ArdenHide, Lomet</Authors>
-		<Company>The-Poolz</Company>
 		<Product>Net.Cache.DynamoDb.ERC20</Product>
 		<Title>A specialized extension of `Net.Cache.DynamoDb` package, for caching ERC20 token information in Amazon DynamoDB.</Title>
 		<Description>A specialized extension of `Net.Cache.DynamoDb` package, for caching ERC20 token information in Amazon DynamoDB.</Description>
-		<RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>https://github.com/The-Poolz/Net.Cache/releases/tag/v1.3.3</PackageReleaseNotes>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageTags>Cache DynamoDb ERC20</PackageTags>
-		<IncludeSymbols>True</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="..\..\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-	</ItemGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="Net.Cryptography.SHA256" Version="1.1.0" />
@@ -35,13 +17,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Net.Cache.DynamoDb\Net.Cache.DynamoDb.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="README.md">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
 	</ItemGroup>
 
 </Project>
