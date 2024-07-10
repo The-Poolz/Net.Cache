@@ -84,7 +84,7 @@ namespace Net.Cache.DynamoDb
         }
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Remove(TKey)"/>
-        public void Remove(TKey key) => Context.DeleteAsync(key)
+        public void Remove(TKey key) => Context.DeleteAsync<TValue>(key)
             .GetAwaiter()
             .GetResult();
 
