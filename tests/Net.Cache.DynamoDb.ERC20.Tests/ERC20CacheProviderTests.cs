@@ -1,3 +1,4 @@
+using System.Numerics;
 using Moq;
 using Xunit;
 using FluentAssertions;
@@ -85,5 +86,30 @@ public class ERC20CacheProviderTests
                 .ReturnsAsync(value);
         }
         return mock.Object;
+    }
+
+    [Fact]
+    internal void GetOrAdd_CovalentServiceIntegration_WorksCorrectly()
+    {
+        var expectedDecimals = (byte)6;
+        var expectedName = "USD Coin";
+        var expectedSymbol = "USDC";
+        var expectedTotalSupply = new BigInteger(1000000);
+
+        var mockCovalentService = new Mock<IERC20Service>();
+        mockCovalentService.Setup(x => x.ContractAddress).Returns(contractAddress);
+        mockCovalentService.Setup(x => x.Decimals()).Returns(expectedDecimals);
+        mockCovalentService.Setup(x => x.Name()).Returns(expectedName);
+        mockCovalentService.Setup(x => x.Symbol()).Returns(expectedSymbol);
+        mockCovalentService.Setup(x => x.TotalSupply()).Returns(expectedTotalSupply);
+
+        var erc20StorageProvider = new ERC20StorageProvider(MockContext(false));
+        var erc20CacheProvider = new ERC20CacheProvider(erc20StorageProvider);
+
+        var addedItem = erc20CacheProvider.GetOrAdd(new GetCacheRequest(chainId, mockCovalentService.Object));
+
+        addedItem.Should().BeEquivalentTo(new ERC20DynamoDbTable(
+            chainId, contractAddress, expectedName, expectedSymbol, expectedDecimals, expectedTotalSupply
+        ));
     }
 }

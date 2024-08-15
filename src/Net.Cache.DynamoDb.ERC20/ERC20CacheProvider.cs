@@ -33,7 +33,6 @@ namespace Net.Cache.DynamoDb.ERC20
         /// <summary>
         /// Retrieves an ERC20 token information from the cache or adds it to the cache if it does not exist.
         /// </summary>
-        /// <param name="key">The cache key associated with the ERC20 token information.</param>
         /// <param name="request">The request containing details required to retrieve or add the ERC20 token information.</param>
         /// <returns>The ERC20 token information from the cache.</returns>
         /// <remarks>

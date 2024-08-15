@@ -1,5 +1,6 @@
 ﻿using Net.Web3.EthereumWallet;
 using Net.Cache.DynamoDb.ERC20.RPC;
+using Net.Cache.DynamoDb.ERC20.Covalent;
 
 namespace Net.Cache.DynamoDb.ERC20.Models
 {
@@ -39,6 +40,22 @@ namespace Net.Cache.DynamoDb.ERC20.Models
         /// </remarks>
         public GetCacheRequest(long chainId, EthereumAddress contractAddress, string rpcUrl, bool updateTotalSupply = true)
             : this(chainId, new ERC20Service(rpcUrl, contractAddress), updateTotalSupply)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetCacheRequest"/> class with specified API key, chain ID, and contract address,
+        /// using the Covalent API service for retrieving ERC20 token data.
+        /// </summary>
+        /// <param name="apiKey">The API key for accessing the Covalent API service.</param>
+        /// <param name="chainId">The blockchain chain ID.</param>
+        /// <param name="contractAddress">The Ethereum address of the ERC20 token contract.</param>
+        /// <remarks>
+        /// This constructor creates an instance of the <see cref="CovalentService"/> class using the provided API key, 
+        /// chain ID, and contract address. It is intended for use cases where data needs to be fetched from the Covalent API 
+        /// instead of directly interacting with the blockchain via RPC.
+        /// </remarks>
+        public GetCacheRequest(string apiKey, long chainId, EthereumAddress contractAddress)
+            : this(chainId, new CovalentService(apiKey, chainId, contractAddress))
         { }
 
         /// <summary>
