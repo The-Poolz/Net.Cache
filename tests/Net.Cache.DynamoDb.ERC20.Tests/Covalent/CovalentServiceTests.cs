@@ -20,6 +20,7 @@ namespace Net.Cache.DynamoDb.ERC20.Tests.Covalent
         {
             _contractAddress = EthereumAddress.ZeroAddress;
             _covalentService = new CovalentService(_apiKey, _chainId, _contractAddress);
+            Environment.SetEnvironmentVariable("URL_COVALENT", $"https://api.covalenthq.com/v1/{_chainId}/tokens/{_contractAddress}/token_holders_v2/?" + $"page-size=100&page-number=0&key={_apiKey}");
         }
 
         private static JObject CreateMockResponse(byte decimals, string name, string symbol, string totalSupply)

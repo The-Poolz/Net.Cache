@@ -53,12 +53,16 @@ namespace Net.Cache.DynamoDb.ERC20.Covalent
         /// </summary>
         /// <returns>A task that represents the asynchronous operation. The task result contains the token data as a <see cref="JObject"/>.</returns>
         /// <remarks>
-        /// This method constructs the API URL using the provided parameters and retrieves the token data. 
-        /// The data is cached to minimize subsequent API calls.
+        /// This method constructs the API URL using a template from the environment settings and the provided parameters 
+        /// (chain ID, contract address, API key). The URL is then used to retrieve the token data, which is cached 
+        /// to minimize subsequent API calls.
         /// </remarks>
         private async Task<JObject> LoadTokenDataAsync()
         {
-            var url = $"https://api.covalenthq.com/v1/{_chainId}/tokens/{_contractAddress}/token_holders_v2/?" + $"page-size=100&page-number=0&key={_apiKey}";
+            var url = Settings.UrlCovalent
+                .Replace("{chainId}", _chainId.ToString())
+                .Replace("{contractAddress}", _contractAddress.ToString())
+                .Replace("{apiKey}", _apiKey);
 
             var responseString = await url.GetStringAsync();
             return JsonConvert.DeserializeObject<JObject>(responseString);
