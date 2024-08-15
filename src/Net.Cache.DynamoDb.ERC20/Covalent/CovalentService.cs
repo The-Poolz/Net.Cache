@@ -77,7 +77,7 @@ namespace Net.Cache.DynamoDb.ERC20.Covalent
         public async Task<byte> DecimalsAsync()
         {
             var tokenData = await GetTokenDataAsync();
-            return tokenData["data"]["items"][0]["contract_decimals"].Value<byte>();
+            return tokenData["data"]["items"][1]["contract_decimals"].Value<byte>();
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Net.Cache.DynamoDb.ERC20.Covalent
         public async Task<string> NameAsync()
         {
             var tokenData = await GetTokenDataAsync();
-            return tokenData["data"]["items"][0]["contract_name"].Value<string>();
+            return tokenData["data"]["items"][1]["contract_name"].Value<string>();
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Net.Cache.DynamoDb.ERC20.Covalent
         public async Task<string> SymbolAsync()
         {
             var tokenData = await GetTokenDataAsync();
-            return tokenData["data"]["items"][0]["contract_ticker_symbol"].Value<string>();
+            return tokenData["data"]["items"][1]["contract_ticker_symbol"].Value<string>();
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Net.Cache.DynamoDb.ERC20.Covalent
         public async Task<BigInteger> TotalSupplyAsync()
         {
             var tokenData = await GetTokenDataAsync();
-            var totalSupplyString = tokenData["data"]["items"][0]["total_supply"].Value<string>();
+            var totalSupplyString = tokenData["data"]["items"][1]["total_supply"].Value<string>();
 
             return BigInteger.Parse(totalSupplyString);
         }
