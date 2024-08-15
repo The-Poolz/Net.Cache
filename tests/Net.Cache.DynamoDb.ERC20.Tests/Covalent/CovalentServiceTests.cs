@@ -1,97 +1,104 @@
-﻿using System.Numerics;
-using Xunit;
+﻿using Xunit;
+using System.Numerics;
 using FluentAssertions;
+using Flurl.Http.Testing;
 using Newtonsoft.Json.Linq;
 using Net.Web3.EthereumWallet;
-using Net.Cache.DynamoDb.ERC20.Covalent;
-using Flurl.Http.Testing;
-using Amazon.DynamoDBv2.DataModel;
-using Moq;
 using Net.Cache.DynamoDb.ERC20.Models;
-using Net.Cryptography.SHA256;
-using Net.Cache.DynamoDb.ERC20.RPC;
+using Net.Cache.DynamoDb.ERC20.Covalent;
 
 namespace Net.Cache.DynamoDb.ERC20.Tests.Covalent
 {
     public class CovalentServiceTests
     {
-        private readonly long chainId = 1;
-        private readonly string apiKey = "test-api-key";
-        private readonly CovalentService covalentService;
-        private const string ContractAddress = "0x";
+        private readonly long _chainId = 1;
+        private readonly string _apiKey = "test-api-key";
+        private readonly CovalentService _covalentService;
+        private readonly string _contractAddress;
 
         public CovalentServiceTests()
         {
-            var contractAddress = EthereumAddress.ZeroAddress;
-            covalentService = new CovalentService(apiKey, chainId, contractAddress);
+            _contractAddress = EthereumAddress.ZeroAddress;
+            _covalentService = new CovalentService(_apiKey, _chainId, _contractAddress);
+        }
+
+        private static JObject CreateMockResponse(byte decimals, string name, string symbol, string totalSupply)
+        {
+            return new JObject
+            {
+                ["data"] = new JObject
+                {
+                    ["items"] = new JArray
+                    {
+                        new JObject
+                        {
+                            ["contract_decimals"] = decimals,
+                            ["contract_name"] = name,
+                            ["contract_ticker_symbol"] = symbol,
+                            ["total_supply"] = totalSupply
+                        }
+                    }
+                }
+            };
         }
 
         [Fact]
-        public async Task DecimalsAsync_ShouldReturnExpectedDecimals()
+        public async Task CovalentService_Methods_ShouldReturnExpectedValues()
         {
-            using (var httpTest = new HttpTest())
-            {
-                byte expectedDecimals = 18;
-                var jsonResponse = new JObject
-                {
-                    ["data"] = new JObject
-                    {
-                        ["items"] = new JArray
-                        {
-                            new JObject
-                            {
-                                ["contract_decimals"] = expectedDecimals,
-                                ["contract_name"] = "Test Token",
-                                ["contract_ticker_symbol"] = "TTT"
-                            }
-                        }
-                    }
-                };
+            using var httpTest = new HttpTest();
+            const byte expectedDecimals = 18;
+            const string expectedName = "Test Token";
+            const string expectedSymbol = "TTT";
+            const string expectedTotalSupply = "1000000";
+            var jsonResponse = CreateMockResponse(expectedDecimals, expectedName, expectedSymbol, expectedTotalSupply);
 
-                httpTest.RespondWith(jsonResponse.ToString());
+            httpTest.RespondWith(jsonResponse.ToString());
 
-                var decimals = await covalentService.DecimalsAsync();
-                var name = await covalentService.NameAsync();
-                var symbol = await covalentService.SymbolAsync();
+            var decimals = await _covalentService.DecimalsAsync();
+            var name = await _covalentService.NameAsync();
+            var symbol = await _covalentService.SymbolAsync();
+            var totalSupply = await _covalentService.TotalSupplyAsync();
 
-                decimals.Should().Be(expectedDecimals);
-                name.Should().Be("Test Token");
-                symbol.Should().Be("TTT");
-
-                (await covalentService.DecimalsAsync()).Should().Be(expectedDecimals);
-                covalentService.Name().Should().Be("Test Token");
-                covalentService.Symbol().Should().Be("TTT");
-            }
+            decimals.Should().Be(expectedDecimals);
+            name.Should().Be(expectedName);
+            symbol.Should().Be(expectedSymbol);
+            totalSupply.Should().Be(BigInteger.Parse(expectedTotalSupply));
         }
 
         [Fact]
-        public async Task GetTokenDataAsync_ShouldReturnExpectedData()
+        public void Constructor_ShouldInitializeCorrectly_WithCovalentService()
         {
-            using (var httpTest = new HttpTest())
-            {
-                var expectedData = new JObject
-                {
-                    ["data"] = new JObject
-                    {
-                        ["items"] = new JArray
-                        {
-                            new JObject
-                            {
-                                ["contract_decimals"] = 18,
-                                ["contract_name"] = "TestToken",
-                                ["contract_ticker_symbol"] = "TT"
-                            }
-                        }
-                    }
-                };
+            var ethereumAddress = (EthereumAddress)_contractAddress;
 
-                httpTest.RespondWith(expectedData.ToString());
+            var cacheRequest = new GetCacheRequest(_apiKey, _chainId, ethereumAddress);
 
-                var result = await covalentService.GetTokenDataAsync();
+            cacheRequest.ChainId.Should().Be(_chainId);
+            cacheRequest.ERC20Service.Should().NotBeNull();
+            cacheRequest.ERC20Service.ContractAddress.Should().Be(ethereumAddress);
+        }
 
-                Assert.NotNull(result);
-                Assert.Equal(expectedData.ToString(), result.ToString());
-            }
+        [Fact]
+        public async Task LoadTokenDataAsync_ShouldReturnCorrectData()
+        {
+            using var httpTest = new HttpTest();
+            var expectedJson = CreateMockResponse(18, "Test Token", "TTT", "1000000");
+
+            httpTest.RespondWith(expectedJson.ToString());
+
+            var result = await _covalentService.GetTokenDataAsync();
+
+            result.Should().BeEquivalentTo(expectedJson);
+            httpTest.ShouldHaveCalled($"https://api.covalenthq.com/v1/{_chainId}/tokens/{_contractAddress}/token_holders_v2/?page-size=100&page-number=0&key={_apiKey}")
+                .WithVerb(HttpMethod.Get);
+        }
+
+        [Fact]
+        public void Constructor_ShouldInitializeFieldsCorrectly()
+        {
+            var service = new CovalentService(_apiKey, _chainId, _contractAddress);
+
+            service.ContractAddress.Should().Be((EthereumAddress)_contractAddress);
+            service.Should().NotBeNull();
         }
     }
 }
