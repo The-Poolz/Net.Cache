@@ -32,6 +32,13 @@ namespace Net.Cache.DynamoDb.ERC20.Tests.Covalent
                     {
                         new JObject
                         {
+                            ["contract_decimals"] = decimals + 1,
+                            ["contract_name"] = name + " 2",
+                            ["contract_ticker_symbol"] = symbol + "2",
+                            ["total_supply"] = totalSupply
+                        },
+                        new JObject
+                        {
                             ["contract_decimals"] = decimals,
                             ["contract_name"] = name,
                             ["contract_ticker_symbol"] = symbol,
