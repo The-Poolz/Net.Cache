@@ -20,7 +20,7 @@ namespace Net.Cache.DynamoDb.ERC20.Tests.Covalent
         {
             _contractAddress = EthereumAddress.ZeroAddress;
             _covalentService = new CovalentService(_apiKey, _chainId, _contractAddress);
-            Environment.SetEnvironmentVariable("URL_COVALENT", $"https://api.covalenthq.com/v1/{_chainId}/tokens/{_contractAddress}/token_holders_v2/?" + $"page-size=100&page-number=0&key={_apiKey}");
+            Environment.SetEnvironmentVariable("URL_COVALENT", "https://api.covalenthq.com/v1/{{chainId}}/tokens/{{contractAddress}}/token_holders_v2/?page-size=100&page-number=0&key={{apiKey}}");
         }
 
         private static JObject CreateMockResponse(byte decimals, string name, string symbol, string totalSupply)
@@ -78,7 +78,7 @@ namespace Net.Cache.DynamoDb.ERC20.Tests.Covalent
         {
             var ethereumAddress = (EthereumAddress)_contractAddress;
 
-            var cacheRequest = new GetCacheRequest(_apiKey, _chainId, ethereumAddress);
+            var cacheRequest = GetCacheRequest.CreateWithCovalentService(_apiKey, _chainId, ethereumAddress);
 
             cacheRequest.ChainId.Should().Be(_chainId);
             cacheRequest.ERC20Service.Should().NotBeNull();
@@ -96,7 +96,10 @@ namespace Net.Cache.DynamoDb.ERC20.Tests.Covalent
             var result = await _covalentService.GetTokenDataAsync();
 
             result.Should().BeEquivalentTo(expectedJson);
-            httpTest.ShouldHaveCalled($"https://api.covalenthq.com/v1/{_chainId}/tokens/{_contractAddress}/token_holders_v2/?page-size=100&page-number=0&key={_apiKey}")
+
+            var expectedUrl = $"https://api.covalenthq.com/v1/1/tokens/0x0000000000000000000000000000000000000000/token_holders_v2/?page-size=100&page-number=0&key=test-api-key";
+
+            httpTest.ShouldHaveCalled(expectedUrl)
                 .WithVerb(HttpMethod.Get);
         }
 

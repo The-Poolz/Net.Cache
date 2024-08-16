@@ -2,6 +2,7 @@
 using Flurl.Http;
 using Newtonsoft.Json;
 using System.Numerics;
+using HandlebarsDotNet;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using Net.Web3.EthereumWallet;
@@ -59,10 +60,14 @@ namespace Net.Cache.DynamoDb.ERC20.Covalent
         /// </remarks>
         private async Task<JObject> LoadTokenDataAsync()
         {
-            var url = Settings.UrlCovalent
-                .Replace("{chainId}", _chainId.ToString())
-                .Replace("{contractAddress}", _contractAddress.ToString())
-                .Replace("{apiKey}", _apiKey);
+            var template = Handlebars.Compile(Settings.UrlCovalent);
+
+            var url = template(new
+            {
+                chainId = _chainId,
+                contractAddress = _contractAddress.ToString(),
+                apiKey = _apiKey
+            });
 
             var responseString = await url.GetStringAsync();
             return JsonConvert.DeserializeObject<JObject>(responseString);

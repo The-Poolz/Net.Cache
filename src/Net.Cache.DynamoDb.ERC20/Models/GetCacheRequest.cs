@@ -43,22 +43,6 @@ namespace Net.Cache.DynamoDb.ERC20.Models
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetCacheRequest"/> class with specified API key, chain ID, and contract address,
-        /// using the Covalent API service for retrieving ERC20 token data.
-        /// </summary>
-        /// <param name="apiKey">The API key for accessing the Covalent API service.</param>
-        /// <param name="chainId">The blockchain chain ID.</param>
-        /// <param name="contractAddress">The Ethereum address of the ERC20 token contract.</param>
-        /// <remarks>
-        /// This constructor creates an instance of the <see cref="CovalentService"/> class using the provided API key, 
-        /// chain ID, and contract address. It is intended for use cases where data needs to be fetched from the Covalent API 
-        /// instead of directly interacting with the blockchain via RPC.
-        /// </remarks>
-        public GetCacheRequest(string apiKey, long chainId, EthereumAddress contractAddress)
-            : this(chainId, new CovalentService(apiKey, chainId, contractAddress))
-        { }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="GetCacheRequest"/> class with a specified ERC20 service.
         /// </summary>
         /// <param name="chainId">The block-chain chain ID.</param>
@@ -74,5 +58,21 @@ namespace Net.Cache.DynamoDb.ERC20.Models
             ERC20Service = erc20Service;
             UpdateTotalSupply = updateTotalSupply;
         }
+
+        /// <summary>
+        /// Creates an instance of the <see cref="GetCacheRequest"/> class using the Covalent API service.
+        /// </summary>
+        /// <param name="apiKey">The API key for accessing the Covalent API service.</param>
+        /// <param name="chainId">The blockchain chain ID.</param>
+        /// <param name="contractAddress">The Ethereum address of the ERC20 token contract.</param>
+        /// <returns>An instance of the <see cref="GetCacheRequest"/> class initialized with the Covalent API service.</returns>
+        /// <remarks>
+        /// This method provides a convenient way to create a <see cref="GetCacheRequest"/> that interacts with the Covalent API service 
+        /// for retrieving ERC20 token data. It simplifies the creation of <see cref="GetCacheRequest"/> by encapsulating 
+        /// the creation of a <see cref="CovalentService"/> instance, ensuring that the correct service is used for interacting 
+        /// with the Covalent API.
+        /// </remarks>
+        public static GetCacheRequest CreateWithCovalentService(string apiKey, long chainId, EthereumAddress contractAddress)
+            => new GetCacheRequest(chainId, new CovalentService(apiKey, chainId, contractAddress));
     }
 }
