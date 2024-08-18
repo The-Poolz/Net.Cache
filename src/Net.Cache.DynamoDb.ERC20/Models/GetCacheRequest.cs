@@ -1,6 +1,6 @@
 ﻿using Net.Web3.EthereumWallet;
 using Net.Cache.DynamoDb.ERC20.RPC;
-using Net.Cache.DynamoDb.ERC20.Covalent;
+using Net.Cache.DynamoDb.ERC20.Api;
 
 namespace Net.Cache.DynamoDb.ERC20.Models
 {
@@ -59,20 +59,7 @@ namespace Net.Cache.DynamoDb.ERC20.Models
             UpdateTotalSupply = updateTotalSupply;
         }
 
-        /// <summary>
-        /// Creates an instance of the <see cref="GetCacheRequest"/> class using the Covalent API service.
-        /// </summary>
-        /// <param name="apiKey">The API key for accessing the Covalent API service.</param>
-        /// <param name="chainId">The blockchain chain ID.</param>
-        /// <param name="contractAddress">The Ethereum address of the ERC20 token contract.</param>
-        /// <returns>An instance of the <see cref="GetCacheRequest"/> class initialized with the Covalent API service.</returns>
-        /// <remarks>
-        /// This method provides a convenient way to create a <see cref="GetCacheRequest"/> that interacts with the Covalent API service 
-        /// for retrieving ERC20 token data. It simplifies the creation of <see cref="GetCacheRequest"/> by encapsulating 
-        /// the creation of a <see cref="CovalentService"/> instance, ensuring that the correct service is used for interacting 
-        /// with the Covalent API.
-        /// </remarks>
-        public static GetCacheRequest CreateWithCovalentService(string apiKey, long chainId, EthereumAddress contractAddress)
-            => new GetCacheRequest(chainId, new CovalentService(apiKey, chainId, contractAddress));
+        public static GetCacheRequest CreateWithCovalentService(string apiKey, long chainId, EthereumAddress contractAddress, string apiUrl)
+            => new GetCacheRequest(chainId, new ApiERC20Service(apiKey, chainId, contractAddress, apiUrl));
     }
 }
