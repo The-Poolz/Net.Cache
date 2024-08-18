@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Net.Web3.EthereumWallet;
 using Net.Cache.DynamoDb.ERC20.Api;
 using Net.Cache.DynamoDb.ERC20.Models;
+using Net.Cache.DynamoDb.ERC20.Models.Api;
 
 namespace Net.Cache.DynamoDb.ERC20.Tests.Api;
 
@@ -20,7 +21,7 @@ public class ApiERC20ServiceTests
     public ApiERC20ServiceTests()
     {
         _contractAddress = EthereumAddress.ZeroAddress;
-        _apiErc20Service = new ApiERC20Service(_apiKey, _chainId, _contractAddress, _apiUrl);
+        _apiErc20Service = new ApiERC20Service(new ApiERC20ServiceConfig(_apiKey, _chainId, _contractAddress, _apiUrl));
     }
 
     private static JObject CreateMockResponse(byte decimals, string name, string symbol, string totalSupply)
@@ -109,7 +110,7 @@ public class ApiERC20ServiceTests
     [Fact]
     public void Constructor_ShouldInitializeFieldsCorrectly()
     {
-        var service = new ApiERC20Service(_apiKey, _chainId, _contractAddress, _apiUrl);
+        var service = new ApiERC20Service(new ApiERC20ServiceConfig(_apiKey, _chainId, _contractAddress, _apiUrl));
 
         service.ContractAddress.Should().Be((EthereumAddress)_contractAddress);
         service.Should().NotBeNull();
