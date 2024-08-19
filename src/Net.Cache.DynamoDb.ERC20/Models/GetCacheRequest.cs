@@ -1,7 +1,5 @@
 ﻿using Net.Web3.EthereumWallet;
 using Net.Cache.DynamoDb.ERC20.RPC;
-using Net.Cache.DynamoDb.ERC20.Api;
-using Net.Cache.DynamoDb.ERC20.Models.Api;
 
 namespace Net.Cache.DynamoDb.ERC20.Models
 {
@@ -59,8 +57,5 @@ namespace Net.Cache.DynamoDb.ERC20.Models
             ERC20Service = erc20Service;
             UpdateTotalSupply = updateTotalSupply;
         }
-
-        public static GetCacheRequest CreateWithCovalentService(string apiKey, long chainId, EthereumAddress contractAddress, string apiUrl)
-            => new GetCacheRequest(chainId, new ApiERC20Service(new ApiERC20ServiceConfig(apiKey, chainId, contractAddress, apiUrl)));
     }
 }

@@ -45,7 +45,7 @@ namespace Net.Cache.DynamoDb.ERC20.Api
             var url = template(new
             {
                 chainId = _config.ChainId,
-                contractAddress = _config.ContractAddress.ToString(),
+                contractAddress = _config.ContractAddress,
                 apiKey = _config.ApiKey
             });
 

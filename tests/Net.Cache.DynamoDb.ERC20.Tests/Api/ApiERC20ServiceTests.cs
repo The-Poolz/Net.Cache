@@ -55,7 +55,7 @@ public class ApiERC20ServiceTests
     public void ApiERC20Service_Methods_ShouldReturnExpectedValues()
     {
         using var httpTest = new HttpTest();
-        const byte expectedDecimals = 18;
+        const byte expectedDecimals = 6;
         const string expectedName = "Test Token";
         const string expectedSymbol = "TTT";
         const string expectedTotalSupply = "1000000";
@@ -79,7 +79,9 @@ public class ApiERC20ServiceTests
     {
         var ethereumAddress = (EthereumAddress)_contractAddress;
 
-        var cacheRequest = GetCacheRequest.CreateWithCovalentService(_apiKey, _chainId, ethereumAddress, _apiUrl);
+        var config = ApiRequestFactory.CreateApiServiceConfig(_apiKey, _chainId, ethereumAddress, _apiUrl);
+        var apiService = ApiRequestFactory.CreateApiService(config);
+        var cacheRequest = ApiRequestFactory.CreateWithApiService(apiService, _chainId);
 
         cacheRequest.ChainId.Should().Be(_chainId);
         cacheRequest.ERC20Service.Should().NotBeNull();
@@ -87,7 +89,7 @@ public class ApiERC20ServiceTests
     }
 
     [Fact]
-    public async Task GetTokenData_ShouldReturnCorrectData()
+    public void GetTokenData_ShouldReturnCorrectData()
     {
         using var httpTest = new HttpTest();
         var expectedJson = CreateMockResponse(18, "Test Token", "TTT", "1000000");

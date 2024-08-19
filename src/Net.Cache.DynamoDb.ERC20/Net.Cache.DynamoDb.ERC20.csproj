@@ -15,7 +15,6 @@
 	  <PackageReference Include="Net.Cryptography.SHA256" Version="1.1.0" />
 	  <PackageReference Include="Net.Web3.EthereumWallet" Version="1.1.0" />
 	  <PackageReference Include="Nethereum.Web3" Version="4.19.0" />
-	  <PackageReference Include="Utils.EnvironmentManager" Version="3.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>
