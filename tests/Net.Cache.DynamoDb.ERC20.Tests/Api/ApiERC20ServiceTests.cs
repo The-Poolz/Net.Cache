@@ -75,13 +75,14 @@ public class ApiERC20ServiceTests
     }
 
     [Fact]
-    public void Constructor_ShouldInitializeCorrectly()
+    public void ApiRequestFactory_ShouldCreateCorrectlyConfiguredServices()
     {
         var ethereumAddress = (EthereumAddress)_contractAddress;
 
-        var config = ApiRequestFactory.CreateApiServiceConfig(_apiKey, _chainId, ethereumAddress, _apiUrl);
-        var apiService = ApiRequestFactory.CreateApiService(config);
-        var cacheRequest = ApiRequestFactory.CreateWithApiService(apiService, _chainId);
+        var apiRequestFactory = new ApiRequestFactory();
+        var config = apiRequestFactory.CreateApiServiceConfig(_apiKey, _chainId, ethereumAddress, _apiUrl);
+        var apiService = apiRequestFactory.CreateApiService(config);
+        var cacheRequest = apiRequestFactory.CreateWithApiService(apiService, _chainId);
 
         cacheRequest.ChainId.Should().Be(_chainId);
         cacheRequest.ERC20Service.Should().NotBeNull();
