@@ -1,4 +1,5 @@
-﻿using Net.Web3.EthereumWallet;
+﻿using System;
+using Net.Web3.EthereumWallet;
 using Net.Cache.DynamoDb.ERC20.RPC;
 
 namespace Net.Cache.DynamoDb.ERC20.Models
@@ -38,7 +39,18 @@ namespace Net.Cache.DynamoDb.ERC20.Models
         /// This constructor creates an instance of the <see cref="ERC20Service"/> class using the provided RPC URL and contract address.
         /// </remarks>
         public GetCacheRequest(long chainId, EthereumAddress contractAddress, string rpcUrl, bool updateTotalSupply = true)
-            : this(chainId, new ERC20Service(rpcUrl, contractAddress), updateTotalSupply)
+            : this(chainId, new ERC20Service(() => rpcUrl, contractAddress), updateTotalSupply)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetCacheRequest"/> class with specified chain ID, contract address and RPC URL factory.
+        /// </summary>
+        /// <param name="chainId">The block-chain chain ID.</param>
+        /// <param name="contractAddress">The ERC20 token contract address.</param>
+        /// <param name="rpcUrlFactory">A function that returns the RPC URL to interact with the block-chain.</param>
+        /// <param name="updateTotalSupply">Optional. Indicates whether to update the total supply of the token in the cache. Defaults to <see langword="true"/>.</param>
+        public GetCacheRequest(long chainId, EthereumAddress contractAddress, Func<string> rpcUrlFactory, bool updateTotalSupply = true)
+            : this(chainId, new ERC20Service(rpcUrlFactory, contractAddress), updateTotalSupply)
         { }
 
         /// <summary>
