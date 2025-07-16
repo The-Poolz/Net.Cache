@@ -22,4 +22,20 @@ public class GetCacheRequestTests
         request.ChainId.Should().Be(1);
         request.ERC20Service.Should().NotBeNull();
     }
+
+    [Fact]
+    public void Constructor_WithAsyncRpcUrlFactory_ShouldNotInvokeFactory()
+    {
+        var called = false;
+
+        var request = new GetCacheRequest(1, EthereumAddress.ZeroAddress, () =>
+        {
+            called = true;
+            return Task.FromResult("http://localhost");
+        }, false);
+
+        called.Should().BeFalse();
+        request.ChainId.Should().Be(1);
+        request.ERC20Service.Should().NotBeNull();
+    }
 }
