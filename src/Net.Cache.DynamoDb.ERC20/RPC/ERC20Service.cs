@@ -1,7 +1,9 @@
-﻿using Nethereum.Web3;
+﻿using System;
+using Nethereum.Web3;
 using System.Numerics;
 using Net.Web3.EthereumWallet;
 using Nethereum.Contracts.Standards.ERC20;
+using System.Threading;
 
 namespace Net.Cache.DynamoDb.ERC20.RPC
 {
@@ -14,7 +16,7 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
     /// </remarks>
     public class ERC20Service : IERC20Service
     {
-        private readonly ERC20ContractService contractService;
+        private readonly Lazy<ERC20ContractService> contractService;
 
         /// <inheritdoc cref="IERC20Service.ContractAddress"/>
         public EthereumAddress ContractAddress { get; }
@@ -28,8 +30,26 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
         /// This constructor initializes the contract service for interacting with the ERC20 token.
         /// </remarks>
         public ERC20Service(string rpcUrl, EthereumAddress contractAddress)
-            : this(new Nethereum.Web3.Web3(rpcUrl), contractAddress)
+            : this(() => rpcUrl, contractAddress)
         { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ERC20Service"/> class using a function that provides an RPC URL and contract address.
+        /// </summary>
+        /// <param name="rpcUrlFactory">A function that returns the RPC URL to interact with the block-chain.</param>
+        /// <param name="contractAddress">The ERC20 token contract address.</param>
+        /// <remarks>
+        /// The RPC URL is retrieved only when the service methods are invoked, allowing for lazy initialization.
+        /// </remarks>
+        public ERC20Service(Func<string> rpcUrlFactory, EthereumAddress contractAddress)
+        {
+            ContractAddress = contractAddress;
+            contractService = new Lazy<ERC20ContractService>(() =>
+            {
+                var web3 = new Nethereum.Web3.Web3(rpcUrlFactory());
+                return web3.Eth.ERC20.GetContractService(contractAddress);
+            });
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ERC20Service"/> class using a <see cref="Nethereum.Web3.IWeb3"/> instance and contract address.
@@ -42,19 +62,19 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
         public ERC20Service(IWeb3 web3, EthereumAddress contractAddress)
         {
             ContractAddress = contractAddress;
-            contractService = web3.Eth.ERC20.GetContractService(contractAddress);
+            contractService = new Lazy<ERC20ContractService>(() => web3.Eth.ERC20.GetContractService(contractAddress), LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         /// <inheritdoc cref="IERC20Service.Decimals()"/>
-        public virtual byte Decimals() => contractService.DecimalsQueryAsync().GetAwaiter().GetResult();
+        public virtual byte Decimals() => contractService.Value.DecimalsQueryAsync().GetAwaiter().GetResult();
 
         /// <inheritdoc cref="IERC20Service.Name()"/>
-        public virtual string Name() => contractService.NameQueryAsync().GetAwaiter().GetResult();
+        public virtual string Name() => contractService.Value.NameQueryAsync().GetAwaiter().GetResult();
 
         /// <inheritdoc cref="IERC20Service.Symbol()"/>
-        public virtual string Symbol() => contractService.SymbolQueryAsync().GetAwaiter().GetResult();
+        public virtual string Symbol() => contractService.Value.SymbolQueryAsync().GetAwaiter().GetResult();
 
         /// <inheritdoc cref="IERC20Service.TotalSupply()"/>
-        public virtual BigInteger TotalSupply() => contractService.TotalSupplyQueryAsync().GetAwaiter().GetResult();
+        public virtual BigInteger TotalSupply() => contractService.Value.TotalSupplyQueryAsync().GetAwaiter().GetResult();
     }
 }
