@@ -3,6 +3,7 @@ using Nethereum.Web3;
 using System.Numerics;
 using Net.Web3.EthereumWallet;
 using Nethereum.Contracts.Standards.ERC20;
+using System.Threading;
 
 namespace Net.Cache.DynamoDb.ERC20.RPC
 {
@@ -61,7 +62,7 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
         public ERC20Service(IWeb3 web3, EthereumAddress contractAddress)
         {
             ContractAddress = contractAddress;
-            contractService = new Lazy<ERC20ContractService>(() => web3.Eth.ERC20.GetContractService(contractAddress));
+            contractService = new Lazy<ERC20ContractService>(() => web3.Eth.ERC20.GetContractService(contractAddress), LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         /// <inheritdoc cref="IERC20Service.Decimals()"/>
