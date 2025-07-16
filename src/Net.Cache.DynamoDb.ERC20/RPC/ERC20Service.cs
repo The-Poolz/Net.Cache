@@ -1,9 +1,10 @@
 ﻿using System;
 using Nethereum.Web3;
 using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 using Net.Web3.EthereumWallet;
 using Nethereum.Contracts.Standards.ERC20;
-using System.Threading;
 
 namespace Net.Cache.DynamoDb.ERC20.RPC
 {
@@ -50,6 +51,18 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
                 return web3.Eth.ERC20.GetContractService(contractAddress);
             });
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ERC20Service"/> class using an asynchronous function that provides an RPC URL and contract address.
+        /// </summary>
+        /// <param name="rpcUrlFactoryAsync">A function that asynchronously returns the RPC URL to interact with the block-chain.</param>
+        /// <param name="contractAddress">The ERC20 token contract address.</param>
+        /// <remarks>
+        /// The RPC URL is retrieved only when the service methods are invoked, allowing for lazy initialization.
+        /// </remarks>
+        public ERC20Service(Func<Task<string>> rpcUrlFactoryAsync, EthereumAddress contractAddress)
+            : this(() => rpcUrlFactoryAsync().GetAwaiter().GetResult(), contractAddress)
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ERC20Service"/> class using a <see cref="Nethereum.Web3.IWeb3"/> instance and contract address.

@@ -1,6 +1,7 @@
 ﻿using System;
 using Net.Web3.EthereumWallet;
 using Net.Cache.DynamoDb.ERC20.RPC;
+using System.Threading.Tasks;
 
 namespace Net.Cache.DynamoDb.ERC20.Models
 {
@@ -51,6 +52,17 @@ namespace Net.Cache.DynamoDb.ERC20.Models
         /// <param name="updateTotalSupply">Optional. Indicates whether to update the total supply of the token in the cache. Defaults to <see langword="true"/>.</param>
         public GetCacheRequest(long chainId, EthereumAddress contractAddress, Func<string> rpcUrlFactory, bool updateTotalSupply = true)
             : this(chainId, new ERC20Service(rpcUrlFactory, contractAddress), updateTotalSupply)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetCacheRequest"/> class with specified chain ID, contract address and asynchronous RPC URL factory.
+        /// </summary>
+        /// <param name="chainId">The block-chain chain ID.</param>
+        /// <param name="contractAddress">The ERC20 token contract address.</param>
+        /// <param name="rpcUrlFactoryAsync">A function that asynchronously returns the RPC URL to interact with the block-chain.</param>
+        /// <param name="updateTotalSupply">Optional. Indicates whether to update the total supply of the token in the cache. Defaults to <see langword="true"/>.</param>
+        public GetCacheRequest(long chainId, EthereumAddress contractAddress, Func<Task<string>> rpcUrlFactoryAsync, bool updateTotalSupply = true)
+            : this(chainId, new ERC20Service(rpcUrlFactoryAsync, contractAddress), updateTotalSupply)
         { }
 
         /// <summary>
