@@ -2,6 +2,7 @@
 using Net.Cache.DynamoDb.ERC20.RPC;
 using Net.Cache.DynamoDb.ERC20.Models;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace Net.Cache.DynamoDb.ERC20
 {
@@ -54,6 +55,20 @@ namespace Net.Cache.DynamoDb.ERC20
             return updatedValue;
         }
 
+        protected virtual async Task<ERC20DynamoDbTable> UpdateTotalSupplyAsync(ERC20DynamoDbTable existValue, IERC20Service erc20Service)
+        {
+            var updatedValue = new ERC20DynamoDbTable(
+                existValue.ChainId,
+                existValue.Address,
+                existValue.Name,
+                existValue.Symbol,
+                existValue.Decimals,
+                erc20Service.TotalSupply()
+            );
+            await Context.SaveAsync(updatedValue);
+            return updatedValue;
+        }
+
         /// <summary>
         /// Tries to retrieve an ERC20 token information entry from the cache based on a given key.
         /// </summary>
@@ -78,5 +93,35 @@ namespace Net.Cache.DynamoDb.ERC20
 
             return true;
         }
+
+        public virtual async Task<(bool isExist, ERC20DynamoDbTable? Value)> TryGetValueAsync(string key, GetCacheRequest request)
+        {
+            try
+            {
+                var storedValue = await Context.LoadAsync<ERC20DynamoDbTable>(key, OperationConfig());
+
+                if (storedValue == null)
+                {
+                    return (false, null);
+                }
+
+                if (request.UpdateTotalSupply)
+                {
+                    storedValue = await UpdateTotalSupplyAsync(storedValue, request.ERC20Service);
+                }
+
+                return (true, storedValue);
+            }
+            catch (Amazon.DynamoDBv2.AmazonDynamoDBException)
+            {
+                throw;
+            }
+            catch
+            {
+                return (false, null);
+            }
+        }
+
+        public virtual Task StoreAsync(string key, ERC20DynamoDbTable value) => Context.SaveAsync(value);
     }
 }
