@@ -1,5 +1,6 @@
 ﻿using Net.Cryptography.SHA256;
 using Net.Cache.DynamoDb.ERC20.Models;
+using System.Threading.Tasks;
 
 namespace Net.Cache.DynamoDb.ERC20
 {
@@ -49,6 +50,19 @@ namespace Net.Cache.DynamoDb.ERC20
 
             storedValue = new ERC20DynamoDbTable(request.ChainId, request.ERC20Service);
             storageProvider.Store(storedValue.HashKey, storedValue);
+            return storedValue;
+        }
+
+        public virtual async Task<ERC20DynamoDbTable> GetOrAddAsync(GetCacheRequest request)
+        {
+            var (isExist, storedValue) = await storageProvider.TryGetValueAsync($"{request.ChainId}-{request.ERC20Service.ContractAddress}".ToSha256(), request);
+            if (isExist && storedValue != null)
+            {
+                return storedValue;
+            }
+
+            storedValue = new ERC20DynamoDbTable(request.ChainId, request.ERC20Service);
+            await storageProvider.StoreAsync(storedValue.HashKey, storedValue);
             return storedValue;
         }
     }
