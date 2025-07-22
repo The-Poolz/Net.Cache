@@ -1,12 +1,12 @@
 <Project>
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
-		<Version>1.3.9</Version>
+		<Version>1.3.10</Version>
 		<Authors>ArdenHide, Lomet</Authors>
 		<Company>The-Poolz</Company>
 		<RepositoryUrl>https://github.com/The-Poolz/Net.Cache</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>https://github.com/The-Poolz/Net.Cache/releases/tag/v1.3.9</PackageReleaseNotes>
+		<PackageReleaseNotes>https://github.com/The-Poolz/Net.Cache/releases/tag/v1.3.10</PackageReleaseNotes>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<IncludeSymbols>True</IncludeSymbols>
