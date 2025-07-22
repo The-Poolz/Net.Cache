@@ -8,12 +8,7 @@ namespace Net.Cache.DynamoDb.Tests;
 
 public class DynamoDbStorageProviderTests
 {
-    private readonly Mock<IDynamoDBContext> mockContext;
-
-    public DynamoDbStorageProviderTests()
-    {
-        mockContext = new Mock<IDynamoDBContext>();
-    }
+    private readonly Mock<IDynamoDBContext> mockContext = new();
 
     [Fact]
     public void Constructor_WithoutParameters()
@@ -34,7 +29,7 @@ public class DynamoDbStorageProviderTests
 
         provider.Store(key, value);
 
-        mockContext.Verify(c => c.SaveAsync(value, default), Times.Once);
+        mockContext.Verify(c => c.SaveAsync(value, It.IsAny<SaveConfig>(), CancellationToken.None), Times.Once);
     }
 
     [Fact]
@@ -42,7 +37,7 @@ public class DynamoDbStorageProviderTests
     {
         var expectedValue = new object();
         const string key = "testKey";
-        mockContext.Setup(c => c.LoadAsync<object>(key, null, default))
+        mockContext.Setup(c => c.LoadAsync<object>(key, It.IsAny<LoadConfig>(), CancellationToken.None))
             .ReturnsAsync(expectedValue);
         var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
 
@@ -56,7 +51,7 @@ public class DynamoDbStorageProviderTests
     public void TryGetValue_WhenValueDoesNotExist_ShouldReturnFalse()
     {
         const string key = "testKey";
-        mockContext.Setup(c => c.LoadAsync<object>(key, null, default))
+        mockContext.Setup(c => c.LoadAsync<object>(key, It.IsAny<LoadConfig>(), CancellationToken.None))
             .ReturnsAsync((object)null!);
         var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
 
@@ -70,7 +65,7 @@ public class DynamoDbStorageProviderTests
     public void TryGetValue_WhenExceptionOccurs_ShouldReturnFalse()
     {
         const string key = "testKey";
-        mockContext.Setup(c => c.LoadAsync<object>(key, null, default))
+        mockContext.Setup(c => c.LoadAsync<object>(key, It.IsAny<LoadConfig>(), CancellationToken.None))
             .ThrowsAsync(new Exception());
         var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
 
@@ -84,7 +79,7 @@ public class DynamoDbStorageProviderTests
     public void TryGetValue_WhenAmazonDynamoDBExceptionOccurs_ThrowException()
     {
         const string key = "testKey";
-        mockContext.Setup(c => c.LoadAsync<object>(key, null, default))
+        mockContext.Setup(c => c.LoadAsync<object>(key, It.IsAny<LoadConfig>(), CancellationToken.None))
             .ThrowsAsync(new AmazonDynamoDBException(string.Empty));
         var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
 
@@ -119,7 +114,7 @@ public class DynamoDbStorageProviderTests
     internal void WhenKeyExists_ShouldReturnTrue()
     {
         const string key = "testKey";
-        mockContext.Setup(x => x.LoadAsync<object>(key, It.IsAny<DynamoDBOperationConfig>(), default))
+        mockContext.Setup(x => x.LoadAsync<object>(key, It.IsAny<LoadConfig>(), CancellationToken.None))
             .ReturnsAsync(string.Empty);
         var provider = new DynamoDbStorageProvider<string, object>(mockContext.Object);
 

@@ -37,7 +37,10 @@ namespace Net.Cache.DynamoDb
         /// <param name="tableName">The name of the DynamoDB table to be used. If not specified or empty, the default table name from model is used.</param>
         public DynamoDbStorageProvider(IAmazonDynamoDB client, string tableName = EmptyString)
         {
-            lazyContext = new Lazy<IDynamoDBContext>(new DynamoDBContext(client));
+            lazyContext = new Lazy<IDynamoDBContext>(new DynamoDBContextBuilder()
+                .WithDynamoDBClient(() => client)
+                .Build()
+            );
             this.tableName = tableName;
         }
 
@@ -56,7 +59,7 @@ namespace Net.Cache.DynamoDb
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Store(TKey, TValue)"/>
         public virtual void Store(TKey key, TValue value)
         {
-            Context.SaveAsync(value)
+            Context.SaveAsync(value, OperationConfig<SaveConfig>())
                 .GetAwaiter()
                 .GetResult();
         }
@@ -64,10 +67,10 @@ namespace Net.Cache.DynamoDb
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
         public virtual bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
-            value = default;
+            value = null;
             try
             {
-                value = Context.LoadAsync<TValue>(key, OperationConfig())
+                value = Context.LoadAsync<TValue>(key, OperationConfig<LoadConfig>())
                     .GetAwaiter()
                     .GetResult();
 
@@ -89,18 +92,21 @@ namespace Net.Cache.DynamoDb
             .GetResult();
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.Update(TKey, TValue)"/>
-        public void Update(TKey key, TValue value) => Context.SaveAsync(value, OperationConfig())
+        public void Update(TKey key, TValue value) => Context.SaveAsync(value, OperationConfig<SaveConfig>())
             .GetAwaiter()
             .GetResult();
 
         /// <inheritdoc cref="IStorageProvider{TKey, TValue}.ContainsKey(TKey)"/>
-        public bool ContainsKey(TKey key) => Context.LoadAsync<TValue>(key, OperationConfig())
+        public bool ContainsKey(TKey key) => Context.LoadAsync<TValue>(key, OperationConfig<LoadConfig>())
                 .GetAwaiter()
                 .GetResult() != null;
 
-        protected DynamoDBOperationConfig? OperationConfig() => string.IsNullOrWhiteSpace(tableName) ? null : new DynamoDBOperationConfig
+        protected TConfig? OperationConfig<TConfig>() where TConfig : BaseOperationConfig, new()
         {
-            OverrideTableName = tableName
-        };
+            return string.IsNullOrWhiteSpace(tableName) ? null : new TConfig
+            {
+                OverrideTableName = tableName
+            };
+        }
     }
 }
