@@ -1,8 +1,8 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using System.Threading.Tasks;
+using Amazon.DynamoDBv2.DataModel;
 using Net.Cache.DynamoDb.ERC20.RPC;
 using Net.Cache.DynamoDb.ERC20.Models;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace Net.Cache.DynamoDb.ERC20
 {
@@ -49,7 +49,7 @@ namespace Net.Cache.DynamoDb.ERC20
                 existValue.Decimals,
                 erc20Service.TotalSupply()
             );
-            Context.SaveAsync(updatedValue)
+            Context.SaveAsync(updatedValue, OperationConfig<SaveConfig>())
                 .GetAwaiter()
                 .GetResult();
             return updatedValue;
@@ -65,7 +65,7 @@ namespace Net.Cache.DynamoDb.ERC20
                 existValue.Decimals,
                 erc20Service.TotalSupply()
             );
-            await Context.SaveAsync(updatedValue);
+            await Context.SaveAsync(updatedValue, OperationConfig<SaveConfig>());
             return updatedValue;
         }
 
@@ -98,7 +98,7 @@ namespace Net.Cache.DynamoDb.ERC20
         {
             try
             {
-                var storedValue = await Context.LoadAsync<ERC20DynamoDbTable>(key, OperationConfig());
+                var storedValue = await Context.LoadAsync<ERC20DynamoDbTable>(key, OperationConfig<LoadConfig>());
 
                 if (storedValue == null)
                 {
