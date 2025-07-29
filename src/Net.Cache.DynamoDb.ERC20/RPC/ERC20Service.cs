@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Nethereum.Web3;
 using Nethereum.Contracts;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using Net.Cache.DynamoDb.ERC20.RPC.Models;
 using Net.Cache.DynamoDb.ERC20.RPC.Extensions;
 using Net.Cache.DynamoDb.ERC20.RPC.Exceptions;
+using Net.Cache.DynamoDb.ERC20.RPC.Validators;
 using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 
 namespace Net.Cache.DynamoDb.ERC20.RPC
@@ -43,18 +45,29 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
 
             var handler = _web3.Eth.GetContractQueryHandler<MultiCallFunction>();
             var response = await handler.QueryAsync<List<byte[]>>(_multiCall, multiCallFunction);
-
-            // TODO: Include FluentValidation lib to validate result
-            if (response.Count != multiCallFunction.Calls.Length) throw new Erc20QueryException(token, "MultiCall returned unexpected number of results.");
-            if (response.Exists(r => r == null || r.Length == 0))
-                throw new Erc20QueryException(token, "One of ERC20 calls failed (empty return).");
+            var responseValidator = new MultiCallResponseValidator(multiCallFunction.Calls.Length);
+            var validation = await responseValidator.ValidateAsync(response);
+            if (!validation.IsValid)
+            {
+                var error = string.Join(" ", validation.Errors.Select(e => e.ErrorMessage));
+                throw new Erc20QueryException(token, error);
+            }
 
             var name = response[0].Decode<NameOutputDTO>().Name;
             var symbol = response[1].Decode<SymbolOutputDTO>().Symbol;
             var decimals = response[2].Decode<DecimalsOutputDTO>().Decimals;
             var supply = response[3].Decode<TotalSupplyOutputDTO>().TotalSupply;
 
-            return new Erc20Token(token, name, symbol, decimals, supply);
+            var tokenResult = new Erc20Token(token, name, symbol, decimals, supply);
+            var tokenValidator = new Erc20TokenValidator();
+            var tokenValidation = await tokenValidator.ValidateAsync(tokenResult);
+            if (!tokenValidation.IsValid)
+            {
+                var error = string.Join(" ", tokenValidation.Errors.Select(e => e.ErrorMessage));
+                throw new Erc20QueryException(token, error);
+            }
+
+            return tokenResult;
         }
     }
 }
