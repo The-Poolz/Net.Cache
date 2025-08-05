@@ -3,9 +3,9 @@ using Net.Web3.EthereumWallet;
 
 namespace Net.Cache.DynamoDb.ERC20.RPC.Models
 {
-    public class Erc20Token
+    public class Erc20TokenData
     {
-        public Erc20Token(EthereumAddress address, string name, string symbol, byte decimals, BigInteger totalSupply)
+        public Erc20TokenData(EthereumAddress address, string name, string symbol, byte decimals, BigInteger totalSupply)
         {
             Address = address;
             Name = name;

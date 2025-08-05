@@ -24,12 +24,12 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
             _multiCall = multiCall ?? throw new ArgumentNullException(nameof(multiCall));
         }
 
-        public Erc20Token GetEr20Token(EthereumAddress token)
+        public Erc20TokenData GetEr20Token(EthereumAddress token)
         {
             return GetEr20TokenAsync(token).GetAwaiter().GetResult();
         }
 
-        public async Task<Erc20Token> GetEr20TokenAsync(EthereumAddress token)
+        public async Task<Erc20TokenData> GetEr20TokenAsync(EthereumAddress token)
         {
             if (token == null) throw new ArgumentNullException(nameof(token));
 
@@ -58,7 +58,7 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
             var decimals = response[2].Decode<DecimalsOutputDTO>().Decimals;
             var supply = response[3].Decode<TotalSupplyOutputDTO>().TotalSupply;
 
-            var tokenResult = new Erc20Token(token, name, symbol, decimals, supply);
+            var tokenResult = new Erc20TokenData(token, name, symbol, decimals, supply);
             var tokenValidator = new Erc20TokenValidator();
             var tokenValidation = await tokenValidator.ValidateAsync(tokenResult);
             if (!tokenValidation.IsValid)

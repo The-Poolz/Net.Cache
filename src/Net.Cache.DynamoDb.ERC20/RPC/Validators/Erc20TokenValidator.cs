@@ -4,7 +4,7 @@ using Net.Cache.DynamoDb.ERC20.RPC.Models;
 
 namespace Net.Cache.DynamoDb.ERC20.RPC.Validators
 {
-    internal class Erc20TokenValidator : AbstractValidator<Erc20Token>
+    internal class Erc20TokenValidator : AbstractValidator<Erc20TokenData>
     {
         public Erc20TokenValidator()
         {

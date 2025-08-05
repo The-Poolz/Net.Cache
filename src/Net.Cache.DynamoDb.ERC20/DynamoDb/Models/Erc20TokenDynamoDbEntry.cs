@@ -35,7 +35,7 @@ namespace Net.Cache.DynamoDb.ERC20.DynamoDb.Models
         /// </summary>
         public Erc20TokenDynamoDbEntry() { }
 
-        public Erc20TokenDynamoDbEntry(long chainId, EthereumAddress address, Erc20Token erc20Token)
+        public Erc20TokenDynamoDbEntry(long chainId, EthereumAddress address, Erc20TokenData erc20Token)
         {
             HashKey = GenerateHashKey(chainId, address);
             Name = erc20Token.Name;
