@@ -2,7 +2,6 @@
 using Net.Web3.EthereumWallet;
 using Amazon.DynamoDBv2.DataModel;
 using Net.Cache.DynamoDb.ERC20.RPC.Models;
-using System;
 
 namespace Net.Cache.DynamoDb.ERC20.DynamoDb.Models
 {
@@ -38,6 +37,8 @@ namespace Net.Cache.DynamoDb.ERC20.DynamoDb.Models
         public Erc20TokenDynamoDbEntry(long chainId, EthereumAddress address, Erc20TokenData erc20Token)
         {
             HashKey = GenerateHashKey(chainId, address);
+            ChainId = chainId;
+            Address = address;
             Name = erc20Token.Name;
             Symbol = erc20Token.Symbol;
             Decimals = erc20Token.Decimals;

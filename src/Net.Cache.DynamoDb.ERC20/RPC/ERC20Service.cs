@@ -26,10 +26,10 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
 
         public Erc20TokenData GetEr20Token(EthereumAddress token)
         {
-            return GetEr20TokenAsync(token).GetAwaiter().GetResult();
+            return GetErc20TokenAsync(token).GetAwaiter().GetResult();
         }
 
-        public async Task<Erc20TokenData> GetEr20TokenAsync(EthereumAddress token)
+        public async Task<Erc20TokenData> GetErc20TokenAsync(EthereumAddress token)
         {
             if (token == null) throw new ArgumentNullException(nameof(token));
 

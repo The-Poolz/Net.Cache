@@ -1,5 +1,4 @@
-﻿using System;
-using Nethereum.Web3;
+﻿using Nethereum.Web3;
 using Net.Web3.EthereumWallet;
 
 namespace Net.Cache.DynamoDb.ERC20.RPC
