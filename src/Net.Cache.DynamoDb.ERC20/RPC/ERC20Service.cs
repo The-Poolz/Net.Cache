@@ -24,7 +24,7 @@ namespace Net.Cache.DynamoDb.ERC20.RPC
             _multiCall = multiCall ?? throw new ArgumentNullException(nameof(multiCall));
         }
 
-        public Erc20TokenData GetEr20Token(EthereumAddress token)
+        public Erc20TokenData GetErc20Token(EthereumAddress token)
         {
             return GetErc20TokenAsync(token).GetAwaiter().GetResult();
         }
