@@ -1,4 +1,5 @@
-﻿using Amazon.DynamoDBv2;
+﻿using System;
+using Amazon.DynamoDBv2;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.DataModel;
 using Net.Cache.DynamoDb.ERC20.DynamoDb.Models;
@@ -11,17 +12,17 @@ namespace Net.Cache.DynamoDb.ERC20.DynamoDb
 
         public DynamoDbClient(IDynamoDBContext dynamoDbContext)
         {
-            _dynamoDbContext = dynamoDbContext;
+            _dynamoDbContext = dynamoDbContext ?? throw new ArgumentNullException(nameof(dynamoDbContext));
         }
 
         public DynamoDbClient(IDynamoDBContextBuilder contextBuilder)
-            : this(contextBuilder.Build())
+            : this((contextBuilder ?? throw new ArgumentNullException(nameof(contextBuilder))).Build())
         { }
 
         public DynamoDbClient(IAmazonDynamoDB dynamoDb)
             : this(
                 new DynamoDBContextBuilder()
-                    .WithDynamoDBClient(() => dynamoDb)
+                    .WithDynamoDBClient(() => dynamoDb ?? throw new ArgumentNullException(nameof(dynamoDb)))
             )
         { }
 
@@ -34,12 +35,16 @@ namespace Net.Cache.DynamoDb.ERC20.DynamoDb
 
         public async Task<Erc20TokenDynamoDbEntry?> GetErc20TokenAsync(string hashKey, LoadConfig? config = null)
         {
-            return await _dynamoDbContext.LoadAsync<Erc20TokenDynamoDbEntry>(hashKey, config);
+            return await _dynamoDbContext
+                .LoadAsync<Erc20TokenDynamoDbEntry>(hashKey, config)
+                .ConfigureAwait(false);
         }
 
-        public Task SaveErc20TokenAsync(Erc20TokenDynamoDbEntry entry, SaveConfig? config = null)
+        public async Task SaveErc20TokenAsync(Erc20TokenDynamoDbEntry entry, SaveConfig? config = null)
         {
-            return _dynamoDbContext.SaveAsync(entry, config);
+            await _dynamoDbContext
+                .SaveAsync(entry, config)
+                .ConfigureAwait(false);
         }
     }
 }

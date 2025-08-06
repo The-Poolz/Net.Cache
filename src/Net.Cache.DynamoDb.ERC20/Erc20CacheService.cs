@@ -27,20 +27,28 @@ namespace Net.Cache.DynamoDb.ERC20
 
         public async Task<Erc20TokenDynamoDbEntry> GetOrAddAsync(long chainId, EthereumAddress address, Func<Task<string>> rpcUrlFactoryAsync, Func<Task<EthereumAddress>> multiCallFactoryAsync)
         {
+            if (address == null) throw new ArgumentNullException(nameof(address));
             if (rpcUrlFactoryAsync == null) throw new ArgumentNullException(nameof(rpcUrlFactoryAsync));
             if (multiCallFactoryAsync == null) throw new ArgumentNullException(nameof(multiCallFactoryAsync));
 
-            var value = await _dynamoDbClient.GetErc20TokenAsync(Erc20TokenDynamoDbEntry.GenerateHashKey(chainId, address));
+            var value = await _dynamoDbClient
+                .GetErc20TokenAsync(Erc20TokenDynamoDbEntry.GenerateHashKey(chainId, address))
+                .ConfigureAwait(false);
             if (value != null) return value;
 
-            var rpcUrl = await rpcUrlFactoryAsync();
-            var multiCall = await multiCallFactoryAsync();
+            var rpcUrlTask = rpcUrlFactoryAsync();
+            var multiCallTask = multiCallFactoryAsync();
+
+            await Task.WhenAll(rpcUrlTask, multiCallTask);
+
+            var rpcUrl = rpcUrlTask.Result;
+            var multiCall = multiCallTask.Result;
 
             var erc20Service = _erc20ServiceFactory.Create(new Nethereum.Web3.Web3(rpcUrl), multiCall);
-            var erc20Token = await erc20Service.GetErc20TokenAsync(address);
+            var erc20Token = await erc20Service.GetErc20TokenAsync(address).ConfigureAwait(false);
 
             value = new Erc20TokenDynamoDbEntry(chainId, address, erc20Token);
-            await _dynamoDbClient.SaveErc20TokenAsync(value);
+            await _dynamoDbClient.SaveErc20TokenAsync(value).ConfigureAwait(false);
 
             return value;
         }
