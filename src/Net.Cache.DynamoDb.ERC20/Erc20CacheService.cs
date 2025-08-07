@@ -28,23 +28,20 @@ namespace Net.Cache.DynamoDb.ERC20
             )
         { }
 
-        public async Task<Erc20TokenDynamoDbEntry> GetOrAddAsync(long chainId, EthereumAddress address, Func<Task<string>> rpcUrlFactory, Func<Task<EthereumAddress>> multiCallFactory)
+        public async Task<Erc20TokenDynamoDbEntry> GetOrAddAsync(HashKey hashKey, Func<Task<string>> rpcUrlFactory, Func<Task<EthereumAddress>> multiCallFactory)
         {
-            if (chainId <= 0) throw new ArgumentOutOfRangeException(nameof(address));
-            if (address == null) throw new ArgumentNullException(nameof(address));
+            if (hashKey == null) throw new ArgumentNullException(nameof(hashKey));
             if (rpcUrlFactory == null) throw new ArgumentNullException(nameof(rpcUrlFactory));
             if (multiCallFactory == null) throw new ArgumentNullException(nameof(multiCallFactory));
 
-            var hashKey = Erc20TokenDynamoDbEntry.GenerateHashKey(chainId, address);
-
-            if (_inMemoryCache.TryGetValue(hashKey, out var cachedEntry)) return cachedEntry;
+            if (_inMemoryCache.TryGetValue(hashKey.Value, out var cachedEntry)) return cachedEntry;
 
             var entry = await _dynamoDbClient
                 .GetErc20TokenAsync(hashKey)
                 .ConfigureAwait(false);
             if (entry != null)
             {
-                _inMemoryCache.TryAdd(hashKey, entry);
+                _inMemoryCache.TryAdd(hashKey.Value, entry);
                 return entry;
             }
 
@@ -57,9 +54,9 @@ namespace Net.Cache.DynamoDb.ERC20
             var multiCall = multiCallTask.Result;
 
             var erc20Service = _erc20ServiceFactory.Create(new Nethereum.Web3.Web3(rpcUrl), multiCall);
-            var erc20Token = await erc20Service.GetErc20TokenAsync(address).ConfigureAwait(false);
+            var erc20Token = await erc20Service.GetErc20TokenAsync(hashKey.Address).ConfigureAwait(false);
 
-            entry = new Erc20TokenDynamoDbEntry(chainId, address, erc20Token);
+            entry = new Erc20TokenDynamoDbEntry(hashKey, erc20Token);
             await _dynamoDbClient.SaveErc20TokenAsync(entry).ConfigureAwait(false);
 
             return entry;

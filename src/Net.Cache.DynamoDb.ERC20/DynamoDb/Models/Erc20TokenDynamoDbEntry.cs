@@ -1,6 +1,4 @@
-﻿using Net.Cryptography.SHA256;
-using Net.Web3.EthereumWallet;
-using Amazon.DynamoDBv2.DataModel;
+﻿using Amazon.DynamoDBv2.DataModel;
 using Net.Cache.DynamoDb.ERC20.Rpc.Models;
 
 namespace Net.Cache.DynamoDb.ERC20.DynamoDb.Models
@@ -34,20 +32,15 @@ namespace Net.Cache.DynamoDb.ERC20.DynamoDb.Models
         /// </summary>
         public Erc20TokenDynamoDbEntry() { }
 
-        public Erc20TokenDynamoDbEntry(long chainId, EthereumAddress address, Erc20TokenData erc20Token)
+        public Erc20TokenDynamoDbEntry(HashKey hashKey, Erc20TokenData erc20Token)
         {
-            HashKey = GenerateHashKey(chainId, address);
-            ChainId = chainId;
-            Address = address;
+            HashKey = hashKey.Value;
+            ChainId = hashKey.ChainId;
+            Address = hashKey.Address;
             Name = erc20Token.Name;
             Symbol = erc20Token.Symbol;
             Decimals = erc20Token.Decimals;
             TotalSupply = Nethereum.Web3.Web3.Convert.FromWei(erc20Token.TotalSupply, erc20Token.Decimals);
-        }
-
-        public static string GenerateHashKey(long chainId, EthereumAddress address)
-        {
-            return $"{chainId}-{address}".ToSha256();
         }
     }
 }

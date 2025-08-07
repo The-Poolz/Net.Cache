@@ -33,10 +33,10 @@ namespace Net.Cache.DynamoDb.ERC20.DynamoDb
             )
         { }
 
-        public async Task<Erc20TokenDynamoDbEntry?> GetErc20TokenAsync(string hashKey, LoadConfig? config = null)
+        public async Task<Erc20TokenDynamoDbEntry?> GetErc20TokenAsync(HashKey hashKey, LoadConfig? config = null)
         {
             return await _dynamoDbContext
-                .LoadAsync<Erc20TokenDynamoDbEntry>(hashKey, config)
+                .LoadAsync<Erc20TokenDynamoDbEntry>(hashKey.Value, config)
                 .ConfigureAwait(false);
         }
 

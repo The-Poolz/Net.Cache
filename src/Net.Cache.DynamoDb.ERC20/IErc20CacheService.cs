@@ -7,6 +7,6 @@ namespace Net.Cache.DynamoDb.ERC20
 {
     public interface IErc20CacheService
     {
-        public Task<Erc20TokenDynamoDbEntry> GetOrAddAsync(long chainId, EthereumAddress address, Func<Task<string>> rpcUrlFactory, Func<Task<EthereumAddress>> multiCallFactory);
+        public Task<Erc20TokenDynamoDbEntry> GetOrAddAsync(HashKey hashKey, Func<Task<string>> rpcUrlFactory, Func<Task<EthereumAddress>> multiCallFactory);
     }
 }
