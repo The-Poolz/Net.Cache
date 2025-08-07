@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Net.Web3.EthereumWallet;
 
-namespace Net.Cache.DynamoDb.ERC20.RPC.Models
+namespace Net.Cache.DynamoDb.ERC20.Rpc.Models
 {
     public class Erc20TokenData
     {

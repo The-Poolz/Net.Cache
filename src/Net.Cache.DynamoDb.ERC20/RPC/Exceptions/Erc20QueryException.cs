@@ -1,7 +1,7 @@
 ﻿using System;
 using Net.Web3.EthereumWallet;
 
-namespace Net.Cache.DynamoDb.ERC20.RPC.Exceptions
+namespace Net.Cache.DynamoDb.ERC20.Rpc.Exceptions
 {
     public sealed class Erc20QueryException : Exception
     {

@@ -1,7 +1,7 @@
 ﻿using Nethereum.Web3;
 using Net.Web3.EthereumWallet;
 
-namespace Net.Cache.DynamoDb.ERC20.RPC
+namespace Net.Cache.DynamoDb.ERC20.Rpc
 {
     public class Erc20ServiceFactory : IErc20ServiceFactory
     {

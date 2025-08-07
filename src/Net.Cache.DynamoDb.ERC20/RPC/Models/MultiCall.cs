@@ -1,7 +1,7 @@
 ﻿using Net.Web3.EthereumWallet;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace Net.Cache.DynamoDb.ERC20.RPC.Models
+namespace Net.Cache.DynamoDb.ERC20.Rpc.Models
 {
     public class MultiCall
     {

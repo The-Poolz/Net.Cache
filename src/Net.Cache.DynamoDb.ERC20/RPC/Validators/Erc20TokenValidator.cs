@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 using FluentValidation;
-using Net.Cache.DynamoDb.ERC20.RPC.Models;
+using Net.Cache.DynamoDb.ERC20.Rpc.Models;
 
-namespace Net.Cache.DynamoDb.ERC20.RPC.Validators
+namespace Net.Cache.DynamoDb.ERC20.Rpc.Validators
 {
     internal class Erc20TokenValidator : AbstractValidator<Erc20TokenData>
     {

@@ -4,7 +4,7 @@ using System.Numerics;
 using FluentAssertions;
 using Net.Cryptography.SHA256;
 using Amazon.DynamoDBv2.DataModel;
-using Net.Cache.DynamoDb.ERC20.RPC;
+using Net.Cache.DynamoDb.ERC20.Rpc;
 using Net.Cache.DynamoDb.ERC20.Models;
 
 namespace Net.Cache.DynamoDb.ERC20.Tests;

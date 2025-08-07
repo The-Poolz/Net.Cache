@@ -3,7 +3,7 @@ using Nethereum.Contracts;
 using System.Collections.Generic;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace Net.Cache.DynamoDb.ERC20.RPC.Models
+namespace Net.Cache.DynamoDb.ERC20.Rpc.Models
 {
     [Function("multicall", "bytes[]")]
     public class MultiCallFunction : FunctionMessage

@@ -5,13 +5,13 @@ using Nethereum.Contracts;
 using System.Threading.Tasks;
 using Net.Web3.EthereumWallet;
 using System.Collections.Generic;
-using Net.Cache.DynamoDb.ERC20.RPC.Models;
-using Net.Cache.DynamoDb.ERC20.RPC.Extensions;
-using Net.Cache.DynamoDb.ERC20.RPC.Exceptions;
-using Net.Cache.DynamoDb.ERC20.RPC.Validators;
+using Net.Cache.DynamoDb.ERC20.Rpc.Exceptions;
+using Net.Cache.DynamoDb.ERC20.Rpc.Extensions;
+using Net.Cache.DynamoDb.ERC20.Rpc.Models;
+using Net.Cache.DynamoDb.ERC20.Rpc.Validators;
 using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 
-namespace Net.Cache.DynamoDb.ERC20.RPC
+namespace Net.Cache.DynamoDb.ERC20.Rpc
 {
     public class Erc20Service : IErc20Service
     {

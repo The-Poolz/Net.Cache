@@ -3,7 +3,7 @@ using Xunit;
 using Nethereum.Web3;
 using FluentAssertions;
 using Net.Web3.EthereumWallet;
-using Net.Cache.DynamoDb.ERC20.RPC;
+using Net.Cache.DynamoDb.ERC20.Rpc;
 using Nethereum.Contracts.Services;
 
 namespace Net.Cache.DynamoDb.ERC20.Tests.RPC;

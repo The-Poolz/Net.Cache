@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using System.Collections.Generic;
 
-namespace Net.Cache.DynamoDb.ERC20.RPC.Validators
+namespace Net.Cache.DynamoDb.ERC20.Rpc.Validators
 {
     internal class MultiCallResponseValidator : AbstractValidator<IReadOnlyList<byte[]>>
     {

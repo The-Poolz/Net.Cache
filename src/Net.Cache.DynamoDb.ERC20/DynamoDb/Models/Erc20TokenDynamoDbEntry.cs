@@ -1,7 +1,7 @@
 ﻿using Net.Cryptography.SHA256;
 using Net.Web3.EthereumWallet;
 using Amazon.DynamoDBv2.DataModel;
-using Net.Cache.DynamoDb.ERC20.RPC.Models;
+using Net.Cache.DynamoDb.ERC20.Rpc.Models;
 
 namespace Net.Cache.DynamoDb.ERC20.DynamoDb.Models
 {
