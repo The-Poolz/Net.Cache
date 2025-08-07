@@ -58,6 +58,7 @@ namespace Net.Cache.DynamoDb.ERC20
 
             entry = new Erc20TokenDynamoDbEntry(hashKey, erc20Token);
             await _dynamoDbClient.SaveErc20TokenAsync(entry).ConfigureAwait(false);
+            _inMemoryCache.TryAdd(hashKey.Value, entry);
 
             return entry;
         }
