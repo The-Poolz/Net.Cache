@@ -14,6 +14,19 @@ namespace Net.Cache.DynamoDb.ERC20.Tests;
 
 public class Erc20CacheServiceTests
 {
+    public class Constructor
+    {
+        [Fact]
+        public void Default()
+        {
+            Environment.SetEnvironmentVariable("AWS_REGION", "us-east-1");
+
+            var cacheService = new Erc20CacheService();
+
+            cacheService.Should().NotBeNull();
+        }
+    }
+
     public class GetOrAddAsync
     {
         [Fact]

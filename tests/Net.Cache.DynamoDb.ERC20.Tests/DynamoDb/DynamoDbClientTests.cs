@@ -52,6 +52,16 @@ public class DynamoDbClientTests
 
             mockBuilder.Verify(b => b.Build(), Times.Once);
         }
+
+        [Fact]
+        public void Default()
+        {
+            Environment.SetEnvironmentVariable("AWS_REGION", "us-east-1");
+
+            var dynamoDbClient = new DynamoDbClient();
+
+            dynamoDbClient.Should().NotBeNull();
+        }
     }
 
     public class GetErc20TokenAsync

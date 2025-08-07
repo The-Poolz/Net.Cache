@@ -32,12 +32,6 @@ namespace Net.Cache.DynamoDb.ERC20.Rpc
             _multiCall = multiCall ?? throw new ArgumentNullException(nameof(multiCall));
         }
 
-        /// <inheritdoc cref="IErc20Service.GetErc20Token"/>
-        public Erc20TokenData GetErc20Token(EthereumAddress token)
-        {
-            return GetErc20TokenAsync(token).GetAwaiter().GetResult();
-        }
-
         /// <inheritdoc cref="IErc20Service.GetErc20TokenAsync"/>
         public async Task<Erc20TokenData> GetErc20TokenAsync(EthereumAddress token)
         {
