@@ -30,6 +30,7 @@ namespace Net.Cache.DynamoDb.ERC20
 
         public async Task<Erc20TokenDynamoDbEntry> GetOrAddAsync(long chainId, EthereumAddress address, Func<Task<string>> rpcUrlFactory, Func<Task<EthereumAddress>> multiCallFactory)
         {
+            if (chainId <= 0) throw new ArgumentOutOfRangeException(nameof(address));
             if (address == null) throw new ArgumentNullException(nameof(address));
             if (rpcUrlFactory == null) throw new ArgumentNullException(nameof(rpcUrlFactory));
             if (multiCallFactory == null) throw new ArgumentNullException(nameof(multiCallFactory));
