@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Net.Cache.DynamoDb.ERC20.Rpc.Models;
 using Net.Web3.EthereumWallet;
+using Net.Cache.DynamoDb.ERC20.Rpc.Models;
 
 namespace Net.Cache.DynamoDb.ERC20.Rpc
 {
