@@ -8,12 +8,20 @@ using Net.Cache.DynamoDb.ERC20.DynamoDb.Models;
 
 namespace Net.Cache.DynamoDb.ERC20
 {
+    /// <summary>
+    /// Provides caching of ERC20 token information with a backing store in DynamoDB and an in-memory layer.
+    /// </summary>
     public class Erc20CacheService : IErc20CacheService
     {
         private readonly IDynamoDbClient _dynamoDbClient;
         private readonly IErc20ServiceFactory _erc20ServiceFactory;
         private readonly ConcurrentDictionary<string, Erc20TokenDynamoDbEntry> _inMemoryCache;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Erc20CacheService"/> class.
+        /// </summary>
+        /// <param name="dynamoDbClient">The DynamoDB client used for persistent storage.</param>
+        /// <param name="erc20ServiceFactory">Factory for creating RPC services to query token metadata.</param>
         public Erc20CacheService(IDynamoDbClient dynamoDbClient, IErc20ServiceFactory erc20ServiceFactory)
         {
             _dynamoDbClient = dynamoDbClient ?? throw new ArgumentNullException(nameof(dynamoDbClient));
@@ -21,6 +29,9 @@ namespace Net.Cache.DynamoDb.ERC20
             _inMemoryCache = new ConcurrentDictionary<string, Erc20TokenDynamoDbEntry>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Erc20CacheService"/> class using default implementations.
+        /// </summary>
         public Erc20CacheService()
             : this(
                 new DynamoDbClient(),
@@ -28,6 +39,7 @@ namespace Net.Cache.DynamoDb.ERC20
             )
         { }
 
+        /// <inheritdoc cref="IErc20CacheService.GetOrAddAsync"/>
         public async Task<Erc20TokenDynamoDbEntry> GetOrAddAsync(HashKey hashKey, Func<Task<string>> rpcUrlFactory, Func<Task<EthereumAddress>> multiCallFactory)
         {
             if (hashKey == null) throw new ArgumentNullException(nameof(hashKey));
