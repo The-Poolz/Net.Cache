@@ -39,7 +39,7 @@ public class HashKeyTests
             var key = new HashKey(chainId, address);
 
             key.ChainId.Should().Be(chainId);
-            key.Address.Should().Be(address);
+            key.Address.Should().Be(new EthereumAddress(address));
             key.Value.Should().Be(expected);
             key.ToString().Should().Be(expected);
         }
