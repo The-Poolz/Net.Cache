@@ -10,8 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Flurl.Http" Version="4.0.2" />
-	  <PackageReference Include="Handlebars.Net" Version="2.1.6" />
+	  <PackageReference Include="FluentValidation" Version="11.11.0" />
 	  <PackageReference Include="Net.Cryptography.SHA256" Version="1.1.0" />
 	  <PackageReference Include="Net.Web3.EthereumWallet" Version="1.2.2" />
 	  <PackageReference Include="Nethereum.Web3" Version="5.0.0" />
