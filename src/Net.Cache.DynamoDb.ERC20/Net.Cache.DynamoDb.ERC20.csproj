@@ -13,6 +13,7 @@
 	  <PackageReference Include="FluentValidation" Version="11.11.0" />
 	  <PackageReference Include="Net.Cryptography.SHA256" Version="1.1.0" />
 	  <PackageReference Include="Net.Web3.EthereumWallet" Version="1.2.2" />
+	  <PackageReference Include="Nethereum.Contracts" Version="5.0.0" />
 	  <PackageReference Include="Nethereum.Web3" Version="5.0.0" />
 	</ItemGroup>
 
