@@ -1,0 +1,11 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    uses: The-Poolz/.net-workflows/.github/workflows/publish.yml@v1.0.7
+    secrets:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
