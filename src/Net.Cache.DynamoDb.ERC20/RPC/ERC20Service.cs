@@ -9,6 +9,7 @@ using Net.Cache.DynamoDb.ERC20.Rpc.Exceptions;
 using Net.Cache.DynamoDb.ERC20.Rpc.Extensions;
 using Net.Cache.DynamoDb.ERC20.Rpc.Models;
 using Net.Cache.DynamoDb.ERC20.Rpc.Validators;
+using Nethereum.Contracts.QueryHandlers.MultiCall;
 using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 
 namespace Net.Cache.DynamoDb.ERC20.Rpc
@@ -37,23 +38,24 @@ namespace Net.Cache.DynamoDb.ERC20.Rpc
         {
             if (token == null) throw new ArgumentNullException(nameof(token));
 
-            var multiCallFunction = new MultiCallFunction(
-                calls: new[]
+            var multiCallFunction = new Aggregate3Function
+            {
+                Calls = new List<Call3>
                 {
-                    new MultiCall(to: token, data: new NameFunction().GetCallData()),
-                    new MultiCall(to: token, data: new SymbolFunction().GetCallData()),
-                    new MultiCall(to: token, data: new DecimalsFunction().GetCallData()),
-                    new MultiCall(to: token, data: new TotalSupplyFunction().GetCallData())
+                    new Call3 { Target = token, CallData = new NameFunction().GetCallData() },
+                    new Call3 { Target = token, CallData = new SymbolFunction().GetCallData() },
+                    new Call3 { Target = token, CallData = new DecimalsFunction().GetCallData() },
+                    new Call3 { Target = token, CallData = new TotalSupplyFunction().GetCallData() }
                 }
-            );
-
-            var handler = _web3.Eth.GetContractQueryHandler<MultiCallFunction>();
+            };
+            
+            var handler = _web3.Eth.GetContractQueryHandler<Aggregate3Function>();
             var response = await handler
-                .QueryAsync<List<byte[]>>(_multiCall, multiCallFunction)
+                .QueryAsync<Aggregate3OutputDTO>(_multiCall, multiCallFunction)
                 .ConfigureAwait(false);
-            var responseValidator = new MultiCallResponseValidator(multiCallFunction.Calls.Length);
+            var responseValidator = new MultiCallResponseValidator(multiCallFunction.Calls.Count);
             var validation = await responseValidator
-                .ValidateAsync(response)
+                .ValidateAsync(response.ReturnData.Select(x => x.ReturnData).ToArray())
                 .ConfigureAwait(false);
             if (!validation.IsValid)
             {
@@ -61,10 +63,10 @@ namespace Net.Cache.DynamoDb.ERC20.Rpc
                 throw new Erc20QueryException(token, error);
             }
 
-            var name = response[0].Decode<NameOutputDTO>().Name;
-            var symbol = response[1].Decode<SymbolOutputDTO>().Symbol;
-            var decimals = response[2].Decode<DecimalsOutputDTO>().Decimals;
-            var supply = response[3].Decode<TotalSupplyOutputDTO>().TotalSupply;
+            var name = response.ReturnData[0].ReturnData.Decode<NameOutputDTO>().Name;
+            var symbol = response.ReturnData[1].ReturnData.Decode<SymbolOutputDTO>().Symbol;
+            var decimals = response.ReturnData[2].ReturnData.Decode<DecimalsOutputDTO>().Decimals;
+            var supply = response.ReturnData[3].ReturnData.Decode<TotalSupplyOutputDTO>().TotalSupply;
 
             var tokenResult = new Erc20TokenData(token, name, symbol, decimals, supply);
             var tokenValidator = new Erc20TokenValidator();

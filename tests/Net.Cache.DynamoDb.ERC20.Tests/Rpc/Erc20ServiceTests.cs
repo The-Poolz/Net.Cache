@@ -8,9 +8,9 @@ using Nethereum.RPC.Eth.DTOs;
 using Net.Web3.EthereumWallet;
 using Nethereum.Contracts.Services;
 using Net.Cache.DynamoDb.ERC20.Rpc;
-using Net.Cache.DynamoDb.ERC20.Rpc.Models;
 using Nethereum.Contracts.ContractHandlers;
 using Net.Cache.DynamoDb.ERC20.Rpc.Exceptions;
+using Nethereum.Contracts.QueryHandlers.MultiCall;
 
 namespace Net.Cache.DynamoDb.ERC20.Tests.Rpc;
 
@@ -39,7 +39,7 @@ public class Erc20ServiceTests
         [Fact]
         public async Task WhenTokenNull_ShouldThrow()
         {
-            var handler = new Mock<IContractQueryHandler<MultiCallFunction>>();
+            var handler = new Mock<IContractQueryHandler<Aggregate3Function>>();
             var service = CreateService(handler.Object);
             var act = async () => await service.GetErc20TokenAsync(null!);
             await act.Should().ThrowAsync<ArgumentNullException>();
@@ -49,9 +49,9 @@ public class Erc20ServiceTests
         public async Task WhenResponseValid_ShouldReturnToken()
         {
             var response = BuildResponse("Token", "TKN", 18, new BigInteger(1000));
-            var handlerMock = new Mock<IContractQueryHandler<MultiCallFunction>>();
+            var handlerMock = new Mock<IContractQueryHandler<Aggregate3Function>>();
             handlerMock
-                .Setup(h => h.QueryAsync<List<byte[]>>(It.IsAny<string>(), It.IsAny<MultiCallFunction>(), It.IsAny<BlockParameter>()))
+                .Setup(h => h.QueryAsync<Aggregate3OutputDTO>(It.IsAny<string>(), It.IsAny<Aggregate3Function>(), It.IsAny<BlockParameter>()))
                 .ReturnsAsync(response);
             var service = CreateService(handlerMock.Object);
 
@@ -68,9 +68,9 @@ public class Erc20ServiceTests
         public async Task WhenTokenInvalid_ShouldThrow()
         {
             var response = BuildResponse(string.Empty, "TKN", 18, new BigInteger(1000));
-            var handlerMock = new Mock<IContractQueryHandler<MultiCallFunction>>();
+            var handlerMock = new Mock<IContractQueryHandler<Aggregate3Function>>();
             handlerMock
-                .Setup(h => h.QueryAsync<List<byte[]>>(It.IsAny<string>(), It.IsAny<MultiCallFunction>(), It.IsAny<BlockParameter>()))
+                .Setup(h => h.QueryAsync<Aggregate3OutputDTO>(It.IsAny<string>(), It.IsAny<Aggregate3Function>(), It.IsAny<BlockParameter>()))
                 .ReturnsAsync(response);
             var service = CreateService(handlerMock.Object);
 
@@ -81,24 +81,26 @@ public class Erc20ServiceTests
         }
     }
 
-    private static Erc20Service CreateService(IContractQueryHandler<MultiCallFunction> handler)
+    private static Erc20Service CreateService(IContractQueryHandler<Aggregate3Function> handler)
     {
         var web3Mock = new Mock<IWeb3>();
         var ethMock = new Mock<IEthApiContractService>();
-        ethMock.Setup(e => e.GetContractQueryHandler<MultiCallFunction>()).Returns(handler);
+        ethMock.Setup(e => e.GetContractQueryHandler<Aggregate3Function>()).Returns(handler);
         web3Mock.SetupGet(w => w.Eth).Returns(ethMock.Object);
         return new Erc20Service(web3Mock.Object, EthereumAddress.ZeroAddress);
     }
 
-    private static List<byte[]> BuildResponse(string name, string symbol, byte decimals, BigInteger supply)
+    private static Aggregate3OutputDTO BuildResponse(string name, string symbol, byte decimals, BigInteger supply)
     {
         var abiEncode = new ABIEncode();
-        return
-        [
-            abiEncode.GetABIEncoded(new ABIValue("string", name)),
-            abiEncode.GetABIEncoded(new ABIValue("string", symbol)),
-            abiEncode.GetABIEncoded(new ABIValue("uint8", decimals)),
-            abiEncode.GetABIEncoded(new ABIValue("uint256", supply))
-        ];
+        return new Aggregate3OutputDTO
+        {
+            ReturnData = [
+                new Result { ReturnData = abiEncode.GetABIEncoded(new ABIValue("string", name)) },
+                new Result { ReturnData = abiEncode.GetABIEncoded(new ABIValue("string", symbol)) },
+                new Result { ReturnData = abiEncode.GetABIEncoded(new ABIValue("uint8", decimals)) },
+                new Result { ReturnData = abiEncode.GetABIEncoded(new ABIValue("uint256", supply)) }
+            ]
+        };
     }
 }
