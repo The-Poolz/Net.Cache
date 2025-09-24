@@ -1,0 +1,45 @@
+name: Bump version
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump-version:
+    if: startsWith(github.event.issue.title, 'Bump version to')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Tag parsing
+        id: ver
+        shell: bash
+        run: |
+          title="${{ github.event.issue.title }}"
+          version="${title#Bump version to }"
+          version="${version#v}"
+          version="$(echo "$version" | xargs)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Patch Directory.Build.props
+        run: |
+          path="Directory.Build.props"
+          sed -i -E "s#<Version>[^<]+</Version>#<Version>${{ steps.ver.outputs.version }}</Version>#g" "$path"
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          base: master
+          title: Bump version to ${{ steps.ver.outputs.version }}
+          commit-message: |
+            Bump version to ${{ steps.ver.outputs.version }}
+          branch: bump-version-to-${{ steps.ver.outputs.version }}
+          body: |
+            Closes #${{ github.event.issue.number }}
