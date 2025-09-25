@@ -42,7 +42,9 @@ var cacheService = new Erc20CacheService(dynamoDbClient, erc20ServiceFactory);
 
 #### Caching ERC20 Token Information
 
-To cache ERC20 token information, create a `HashKey` and use the `GetOrAddAsync` method of `Erc20CacheService`:
+To cache ERC20 token information, create a `HashKey` and use one of the `GetOrAddAsync` overloads of `Erc20CacheService`.
+
+The overload that accepts RPC and multicall address factories is useful when you only need to supply connection metadata:
 
 ```csharp
 var chainId = 1L; // Ethereum mainnet
@@ -58,4 +60,16 @@ var tokenInfo = await cacheService.GetOrAddAsync(
 Console.WriteLine($"Token Name: {tokenInfo.Name}, Symbol: {tokenInfo.Symbol}");
 ```
 
-This method retrieves the token information from the cache if it exists, or fetches it from the blockchain and stores it in both the DynamoDB table and the in-memory cache otherwise.
+If you need to control the entire `IWeb3` client creation, you can use the overload that accepts a `Func<Task<IWeb3>>` alongside the multicall factory:
+
+```csharp
+var tokenInfo = await cacheService.GetOrAddAsync(
+    hashKey,
+    web3Factory: () => Task.FromResult((IWeb3)new Web3("https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID")),
+    multiCallFactory: () => Task.FromResult(new EthereumAddress("0x...multicall"))
+);
+
+Console.WriteLine($"Token Name: {tokenInfo.Name}, Symbol: {tokenInfo.Symbol}");
+```
+
+Both overloads retrieve the token information from the cache if it exists, or fetch it from the blockchain and store it in both the DynamoDB table and the in-memory cache otherwise.
